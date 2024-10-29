@@ -360,7 +360,6 @@ class SpriteMove {
         animConfigs: animsArry
       });
 
-
       characterSprite?.setActive(false)
       characterSprite?.setVisible(false)
       this.scene?.add.existing(characterSprite!);
@@ -384,7 +383,6 @@ class SpriteMove {
   }
 
   private moveRandomlyInArea(sprite: any, area: { x: number, y: number, width: number, height: number }) {
-
     const randomX = Phaser.Math.Between(area.x, area.x + area.width);
     const randomY = Phaser.Math.Between(area.y, area.y + area.height);
 
