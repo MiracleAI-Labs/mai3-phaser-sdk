@@ -42,6 +42,15 @@ export class GridDemo extends BaseScene {
       backgroundColor: 0x000000,
       alignment: { horizontal: "center", vertical: "middle" },
       radius: 10,
+      handleDragEnd: (
+        dragChild: Container | undefined,
+        targetChild: Container | undefined,
+        pointer: Phaser.Input.Pointer
+      ) => {
+        if (targetChild) {
+          this.grid.swapChildren(dragChild!, targetChild);
+        }
+      }, 
     });
 
     this.add.existing(this.grid);
@@ -172,14 +181,18 @@ export class GridDemo extends BaseScene {
       targetChild: Container | undefined,
       pointer: Phaser.Input.Pointer
     ) => {
-		if (dragChild && targetChild) {
-			this.catGrid.removeChild(targetChild);
-		}
+      if (targetChild) {
+        this.catGrid.swapChildren(dragChild!, targetChild);
+      }
+      
+      if (dragChild && targetChild) {
+        this.catGrid.removeChild(targetChild);
+      }
 
-		if (dragChild?.Type === "Sprite") {
-			const sprite = dragChild as Sprite;
-			sprite.instance?.play("walk");
-		}
+      if (dragChild?.Type === "Sprite") {
+        const sprite = dragChild as Sprite;
+        sprite.instance?.play("walk");
+      }
     },    
   });
 

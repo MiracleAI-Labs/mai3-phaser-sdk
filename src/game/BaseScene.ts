@@ -20,11 +20,12 @@ class BaseScene extends Phaser.Scene {
     }
   }
 
-  private setupDebugEnvironment() {
+  public setupDebugEnvironment() {
     const bg = this.add
-      .rectangle(0, 0, this.scale.width, this.scale.height, 0x551a8b)
+      .rectangle(0, 0, this.scale.width, this.scale.height, 0x434349)
       .setOrigin(0, 0)
-      .setInteractive();
+      .setInteractive()
+      .setDepth(-1);
 
     ["pointerdown", "pointerup", "pointermove"].forEach((event) => {
       bg.on(event, this.printPointer, this);

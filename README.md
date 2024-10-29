@@ -1,6 +1,6 @@
-# mai3-phaser-ui - Phaser 3 UI Components Library
+# mai3-phaser-sdk - Phaser 3 UI Components Library
 
-**mai3-phaser-ui** is a highly customizable and reusable UI component library designed specifically for the **Phaser 3** game engine. With this library, developers can quickly create and integrate essential UI elements like buttons, sliders, dialogs, and more into Phaser-based games, reducing the complexity of UI implementation and allowing more focus on gameplay.
+**mai3-phaser-sdk** is a highly customizable and reusable UI component library designed specifically for the **Phaser 3** game engine. With this library, developers can quickly create and integrate essential UI elements like buttons, sliders, dialogs, and more into Phaser-based games, reducing the complexity of UI implementation and allowing more focus on gameplay.
 
 ## Key Features
 
@@ -31,6 +31,7 @@
 - ✅ Toast
 - ✅ VolumeSlider
 - ✅ Sprite
+- ✅ ListView
 
 ## future implementation:
 
@@ -39,7 +40,6 @@
 - 🚧 Flex
 - 🚧 Space
 - 🚧 Splitter
-- 🚧 ListView
 - 🚧 Dropdown
 - 🚧 Menu
 - 🚧 Pagination
@@ -62,20 +62,20 @@
 
 ## Installation
 
-Install **mai3-phaser-ui** via npm or yarn:
+Install **mai3-phaser-sdk** via npm or yarn:
 
 ```bash
-npm install mai3-phaser-ui
+npm install @mai3/phaser-sdk
 # or
-yarn add mai3-phaser-ui
+yarn add @mai3/phaser-sdk
 ```
 
 ## Usage Example
 
-Here’s a quick example of how to create different types of buttons using the **mai3-phaser-ui** library:
+Here’s a quick example of how to create different types of buttons using the **mai3-phaser-sdk** library:
 
 ```typescript
-import { BaseScene, Mai3Game, Mai3Plugin } from "mai3-phaser-ui";
+import { BaseScene, Mai3Game, Mai3Plugin } from "@mai3/phaser-sdk";
 
 export class ButtonDemo extends BaseScene {
 
@@ -240,17 +240,17 @@ export function getGameConfig() {
 }
 ```
 
-This example demonstrates how to integrate different types of buttons, including text, draggable, rounded, and image buttons, all fully customizable through the **mai3-phaser-ui** library.
+This example demonstrates how to integrate different types of buttons, including text, draggable, rounded, and image buttons, all fully customizable through the **mai3-phaser-sdk** library.
 
 ## Live Demos
 
-You can explore various **mai3-phaser-ui** components by following these steps:
+You can explore various **mai3-phaser-sdk** components by following these steps:
 
 ```bash
 # Clone the repository
-git clone https://github.com/miracleAI-Lab/mai3-phaser-ui
+git clone https://github.com/miracleAI-Lab/mai3-phaser-sdk
 
-cd mai3-phaser-ui
+cd mai3-phaser-sdk
 
 yarn install
 
@@ -267,8 +267,8 @@ yarn start
 
 ## Contribution
 
-We welcome contributions! If you’d like to help improve **mai3-phaser-ui**, feel free to submit issues or pull requests on our [GitHub repository](https://github.com/miracleAI-Lab/mai3-phaser-ui).
+We welcome contributions! If you’d like to help improve **mai3-phaser-sdk**, feel free to submit issues or pull requests on our [GitHub repository](https://github.com/miracleAI-Lab/mai3-phaser-sdk).
 
 ## License
 
-This project is licensed under the MIT License. For details, check the [LICENSE](https://github.com/miracleAI-Lab/mai3-phaser-ui/blob/main/LICENSE) file.
+This project is licensed under the MIT License. For details, check the [LICENSE](https://github.com/miracleAI-Lab/mai3-phaser-sdk/blob/main/LICENSE) file.

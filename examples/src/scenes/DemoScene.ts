@@ -51,6 +51,7 @@ export class DemoScene extends BaseScene {
             { name: 'Text Box Demo', scene: 'TextBoxDemo', color: 0x8BC34A },
             { name: 'Sprite Demo', scene: 'SpriteDemo', color: 0x4CA600 },
             { name: 'TON Demo', scene: 'TonDemo', color: 0x009688 },
+            { name: 'ListView Demo', scene: 'ListViewDemo', color: 0x009688 },
         ];
 
         const rowButtons = [];

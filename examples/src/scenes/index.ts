@@ -15,10 +15,11 @@ import { ToastDemo } from './ToastDemo';
 import { ProgressBarDemo } from './ProgressBarDemo';
 import { SpriteDemo } from './SpriteDemo';
 import { TonDemo } from './TonDemo';
+import { ListViewDemo } from './ListViewDemo';
 
 export {
   Boot, Preloader,
   DemoScene, ResizeDemo, ButtonDemo, CheckboxDemo, DialogDemo,
   GridDemo, ImageDemo, LabelDemo, SliderDemo, TabsDemo,
-  TextBoxDemo, ToastDemo, ProgressBarDemo, SpriteDemo, TonDemo
+  TextBoxDemo, ToastDemo, ProgressBarDemo, SpriteDemo, TonDemo, ListViewDemo,
 };

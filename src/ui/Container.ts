@@ -11,6 +11,7 @@ export class Container extends Phaser.GameObjects.Container {
   protected _hitArea?: Phaser.Geom.Rectangle | Phaser.Geom.Circle;
   protected _baseConfig?: BaseConfig;
   scene: BaseScene;
+  protected _bg?: Phaser.GameObjects.Image | Phaser.GameObjects.RenderTexture;
 
   constructor(scene: BaseScene, baseConfig?: BaseConfig, type?: string) {
     super(scene, baseConfig?.x, baseConfig?.y);
@@ -18,7 +19,7 @@ export class Container extends Phaser.GameObjects.Container {
     this._id = baseConfig?.id ?? "";
     this.scene = scene;
     this.Type = type ?? "Container";
-    this._baseConfig = baseConfig;
+    this.updateConfig(baseConfig);
 
     this.initializeEvents();
   }
@@ -30,8 +31,9 @@ export class Container extends Phaser.GameObjects.Container {
     }
   }
 
-  public updateConfig(config: BaseConfig): void {
+  public updateConfig(config?: BaseConfig): void {
     this._baseConfig = config;
+    this.setChildrenAsync(config?.childConfigs);
   }
 
   public setEventInteractive(): void {
@@ -55,6 +57,7 @@ export class Container extends Phaser.GameObjects.Container {
     this.setEventInteractive();
     this.scene.input.setDraggable(this);
     this.on("drag", this.onDrag);
+    this.on("dragend", this.onDragEnd);
   }
 
   public onDrag(
@@ -65,6 +68,14 @@ export class Container extends Phaser.GameObjects.Container {
     const [clampedX, clampedY] = this.getClampedPosition(dragX, dragY);
     this.setPosition(clampedX, clampedY);
     this.onDragUpdate(pointer, this.x, this.y);
+  }
+
+  public onDragEnd(
+    pointer: Phaser.Input.Pointer,
+    dragX: number,
+    dragY: number
+  ): void {
+    this.onDragEndUpdate(pointer, this.x, this.y);
   }
 
   private getClampedPosition(dragX: number, dragY: number): [number, number] {
@@ -192,6 +203,24 @@ export class Container extends Phaser.GameObjects.Container {
     this._type = type;
   }
 
+  get padding() {
+    if (this._baseConfig?.padding?.all) {
+      return {
+        left: this._baseConfig!.padding.all,
+        right: this._baseConfig!.padding.all,
+        top: this._baseConfig!.padding.all,
+        bottom: this._baseConfig!.padding.all,
+      };
+    } else {
+      return {
+        left: this._baseConfig?.padding?.left ?? 0,
+        right: this._baseConfig?.padding?.right ?? 0,
+        top: this._baseConfig?.padding?.top ?? 0,
+        bottom: this._baseConfig?.padding?.bottom ?? 0,
+      };
+    }
+  }
+
   public addChild(child: Phaser.GameObjects.GameObject): void {
     if (!this.exists(child)) {
       this.add(child);
@@ -206,6 +235,56 @@ export class Container extends Phaser.GameObjects.Container {
     if (!this.exists(child)) {
       this.addAt(child, index);
     }
+  }
+
+  /**
+   * Asynchronously sets multiple children to this container based on configuration objects
+   * @param childConfigs Optional array of child configuration objects
+   */
+  public async setChildrenAsync(childConfigs?: BaseConfig[]): Promise<any> {
+    if (!childConfigs) {
+      return;
+    }
+    const UIComponentFactory = await import("../utils/UIComponentFactory");
+    for (const config of childConfigs) {
+      const child = UIComponentFactory.default.createChildFromConfig(
+        this.scene,
+        config
+      );
+      child.setSize(config.width ?? 0, config.height ?? 0);
+      this.addChild(child);
+    }
+    this._baseConfig?.handleSetChildrenAsyncEnd?.(this.getAll() ?? []);
+  }
+
+  public drawBackground(config?: BaseConfig): void {
+    if (this._bg) {
+      this._bg.destroy();
+      this._bg = undefined;
+    }
+    const {
+      width,
+      height,
+      borderWidth = 4,
+      radius = 10,
+      borderColor = 0xff8221,
+      backgroundColor,
+      backgroundAlpha,
+    } = config ?? this._baseConfig!;
+    this._bg = Utils.reDrawRoundedRectRenderTexture(
+      this.scene,
+      this._bg! as Phaser.GameObjects.RenderTexture,
+      0,
+      0,
+      (width ?? 0) + borderWidth * 2,
+      (height ?? 0) + borderWidth * 2,
+      borderWidth,
+      radius,
+      borderColor,
+      backgroundColor,
+      backgroundAlpha
+    );
+    this.addChildAt(this._bg!, 0);
   }
 
   drawBorderLine?: Phaser.GameObjects.Rectangle | Phaser.GameObjects.Arc;
@@ -247,5 +326,10 @@ export class Container extends Phaser.GameObjects.Container {
   debug(color?: number): void {
     this.debugDrawBorderLine(color);
     this.debugHitArea();
+  }
+
+  destroy(fromScene?: boolean): void {
+    super.destroy(fromScene);
+    this._bg?.destroy(fromScene);
   }
 }

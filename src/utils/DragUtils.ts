@@ -56,7 +56,7 @@ const DragUtils = {
     hitArea.setPosition(0, 0);
     container.setInteractive(hitArea, Phaser.Geom.Rectangle.Contains);
 
-    console.log("this.width, this.height: ", `${width}, ${height}`);
+    // console.log("this.width, this.height: ", `${width}, ${height}`);
     return hitArea;
   },
 };

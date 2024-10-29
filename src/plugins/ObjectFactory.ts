@@ -31,8 +31,8 @@ type Constructor<T extends Phaser.GameObjects.GameObject> = new (...args: any[])
 
 class ObjectFactory {
   private scene: BaseScene;
-  private displayList: GameObjects.DisplayList;
-  private updateList: GameObjects.UpdateList;
+  private displayList?: GameObjects.DisplayList;
+  private updateList?: GameObjects.UpdateList;
   private addToScene: boolean;
 
   constructor(scene: BaseScene, addToScene: boolean) {
@@ -45,8 +45,8 @@ class ObjectFactory {
   }
 
   destroy() {
-    this.displayList.destroy();
-    this.updateList.destroy();
+    this.displayList = undefined;
+    this.updateList = undefined;
   }
 
   createGameObject<T extends Phaser.GameObjects.GameObject>(ctor: Constructor<T>, scene: Scene, config: any): T {

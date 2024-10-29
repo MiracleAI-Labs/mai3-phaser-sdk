@@ -1,222 +1,283 @@
-import { Container } from './Container';
-import Utils from '../utils';
+import { Container } from "./Container";
 import { BaseScene } from "../game";
-import { TextButton } from './TextButton';
-import { Checkbox } from './Checkbox';
-import { Label } from './Label';
-import { ProgressBar } from './ProgressBar';
-import { Slider } from './Slider';
-import { Image } from './Image';
-import { Text } from './Text';
-import { TextBox } from './TextBox';
-import { ListViewConfig, ListViewItemConfig } from '../types';
-import { Grid } from './Grid';
+import {
+  ListViewConfig,
+  ScrollBarConfig,
+  ScrollState,
+  ScrollDirection,
+  BaseConfig,
+} from "../types";
+import { ScrollBar } from "./ScrollBar";
+import ScrollUtils from "../utils/ScrollUtils";
+
+interface ItemPosition {
+  x: number;
+  y: number;
+}
 
 export class ListView extends Container {
-    // private _content!: Container;
-    // private _mask!: Phaser.GameObjects.Graphics;
-    // private _scrollBar!: Phaser.GameObjects.Graphics;
-    // private _allItems: ListViewItemConfig[] = [];
-    // private _visibleItems: Grid[] = [];
-    // private _startIndex: number = 0;
-    // private _itemsPerPage: number = 10;
-    // private _config: ListViewConfig;
+  private _content?: Container;
+  private _lastChild?: Container;
+  private _mask?: Phaser.GameObjects.Graphics;
+  private _maskBounds?: Phaser.Geom.Rectangle;
+  private _direction: ScrollDirection;
+  private _scrollBar?: ScrollBar;
+  private readonly _scrollState: ScrollState;
+  protected _config?: ListViewConfig;
 
-    // constructor(scene: BaseScene, config: ListViewConfig) {
-    //     super(scene, config);
-    //     this.scene = scene;
-    //     this.Type = 'ListView';
-    //     this._config = config;
-    //     this.draw();
-    //     this.setPosition(
-    //         (scene.sys.game.config.width as number) / 2 - this._config.width / 2,
-    //         (scene.sys.game.config.height as number) / 2 - this._config.height / 2
-    //     );
-    // }
+  constructor(scene: BaseScene, config: ListViewConfig) {
+    super(scene, config);
+    this.Type = "ListView";
+    this._direction = config.direction ?? "y";
+    this._scrollState = {
+      isScrolling: false,
+      start: 0,
+      current: 0,
+      momentum: 0,
+    };
+    this._config = config;
 
-    // draw() {
-    //     const { width, height, padding = 0, background } = this._config;
+    this.initialize();
+  }
 
-    //     // 创建背景
-    //     const bg = this.createBg(0, 0, width, height, background);
-    //     this.add(bg);
+  private initialize(): void {
+    this.setupContent();
+    this.drawBackground();
+    this.setupScrollBar();
+    this.setupMask();
+    this.setupEvents();
+    this.updateScrollBarPosition();
+    this.updateVisibleItems();
+  }
 
-    //     // 创建内容容器
-    //     this._content = new Container(this.scene);
-    //     this._content.setPosition(padding, padding);
-    //     this.add(this._content);
+  private setupContent(): void {
+    this._content = new Container(this.scene);
+    this._content.setPosition(
+      this.padding.left + (this._config?.borderWidth ?? 0),
+      this.padding.top + (this._config?.borderWidth ?? 0)
+    );
+    this._content.setSize(
+      this._config!.width - this.padding.left - this.padding.right,
+      this._config!.height - this.padding.top - this.padding.bottom
+    );
+    this.addChildAt(this._content, 1);
+    this.RefreshBounds();
+  }
 
-    //     // 创建滚动条
-    //     this._scrollBar = this.scene.make.graphics({});
-    //     this.add(this._scrollBar);
+  private setupMask(): void {
+    this._mask = this.scene.add.graphics();
+    this._mask
+      .clear()
+      .fillStyle(0x000000)
+      .fillRect(
+        this.x + (this._config!.borderWidth ?? 0),
+        this.y + (this._config!.borderWidth ?? 0),
+        this.Width - (this._config!.borderWidth ?? 0) * 2,
+        this.Height - (this._config!.borderWidth ?? 0) * 2
+      );
 
-    //     // 创建遮罩
-    //     // this._mask = this.scene.make.graphics({});
-    //     // this._mask.fillStyle(0xffffff);
-    //     // this._mask.fillRect(padding, padding, width - padding * 2, height - padding * 2);
-    //     // this._content.setMask(this._mask.createGeometryMask());
+    this._content?.setMask(
+      new Phaser.Display.Masks.GeometryMask(this.scene, this._mask)
+    );
 
-    //     // 启用交互和拖动
-    //     this.setInteractive(new Phaser.Geom.Rectangle(0, 0, width, height), Phaser.Geom.Rectangle.Contains);
-    //     this.scene.input.setDraggable(this);
-    //     this.on('drag', this.onDrag, this);
-    // }
+    this._maskBounds = new Phaser.Geom.Rectangle(
+      this.x,
+      this.y,
+      this.Width,
+      this.Height
+    );
+  }
 
-    // addItem(config: ListViewItemConfig) {
-    //     this._allItems.push(config);
-    //     this.renderVisibleItems();
-    // }
+  private setupScrollBar(): void {
+    if (!this._config!.showScrollbar) return;
+    const scrollBarConfig: ScrollBarConfig = this.createScrollBarConfig();
+    this._scrollBar = new ScrollBar(this.scene, scrollBarConfig);
+    this.add(this._scrollBar);
+  }
 
-    // private renderVisibleItems() {
-    //     // 清除当前可见项
-    //     this._visibleItems.forEach(item => item.destroy());
-    //     this._visibleItems = [];
+  private createScrollBarConfig(): ScrollBarConfig {
+    const borderWidth = this._config?.borderWidth ?? 0;
+    return this._direction === "y"
+      ? {
+          x: this.Width - borderWidth - 6,
+          y: borderWidth,
+          width: 6,
+          height: this.Height - borderWidth * 2,
+          direction: "y",
+        }
+      : {
+          x: borderWidth,
+          y: this.Height - borderWidth - 6,
+          width: this.Width - borderWidth * 2,
+          height: 6,
+          direction: "x",
+        };
+  }
 
-    //     const { itemHeight = 50, padding = 0 } = this._config;
-    //     const endIndex = Math.min(this._startIndex + this._itemsPerPage, this._allItems.length);
+  public addItem(child: Container): Container {
+    const position = this.calculateNextItemPosition();
+    child.setPosition(position.x, position.y);
+    this._content?.addChild(child);
+    this._lastChild = child;
+    this.updateScrollBarPosition();
+    this.updateVisibleItems();
+    return child;
+  }
 
-    //     for (let i = this._startIndex; i < endIndex; i++) {
-    //         const y = (i - this._startIndex) * (itemHeight + padding);
-    //         const item = this.createItem(this._allItems[i], y);
-    //         this._content.addChild(item);
-    //         this._visibleItems.push(item);
-    //     }
+  private calculateNextItemPosition(): ItemPosition {
+    if (!this._lastChild) return { x: 0, y: 0 };
 
-    //     this.updateScrollBar();
-        
-    //     // 添加调试信息
-    //     console.log(`渲染了 ${this._visibleItems.length} 个项目`);
-    //     console.log(`起始索引: ${this._startIndex}, 结束索引: ${endIndex}`);
-    //     console.log(`所有项目数量: ${this._allItems.length}`);
-    // }
+    return {
+      x:
+        this._direction === "x" ? this._lastChild.x + this._lastChild.Width : 0,
+      y:
+        this._direction === "y"
+          ? this._lastChild.y + this._lastChild.Height
+          : 0,
+    };
+  }
 
-    // private createItem(config: ListViewItemConfig, y: number): Grid {
-    //     const { width, itemHeight = 50 } = this._config;
-    //     const item = new Grid(this.scene, {
-    //         x: 0,
-    //         y: y,
-    //         width: width - 20,
-    //         height: itemHeight,
-    //         background: 0xffffff,
-    //         columnGap: 10,
-    //         rowGap: 5
-    //     });
+  public async setItemsAsync(childConfigs?: BaseConfig[]): Promise<any> {
+    if (!childConfigs) {
+      return;
+    }
+    const UIComponentFactory = await import("../utils/UIComponentFactory");
+    for (const config of childConfigs) {
+      const child = UIComponentFactory.default.createChildFromConfig(
+        this.scene,
+        config
+      );
+      this.addItem(child);
+    }
+    this._config?.handleSetChildrenAsyncEnd?.(this._content?.getAll() ?? []);
+  }
 
-    //     const rowItems = [];
+  public getItemsAtIndex(index: number): Container[] {
+    return (this._content?.getAll()[index] as Container)?.getAll() ?? [];
+  }
 
-    //     // 创建图标（如果有）
-    //     if (config.icon) {
-    //         rowItems.push({
-    //             type: 'Image',
-    //             key: config.icon,
-    //             columnSpan: 4
-    //         });
-    //     }
+  private setupEvents(): void {
+    this.setInteractive();
+    this.scene.input.on("pointerdown", this.handleDown, this);
+    this.scene.input.on("pointermove", this.handleMove, this);
+    this.scene.input.on("pointerup", this.handleUp, this);
+  }
 
-    //     // 创建标签
-    //     rowItems.push({
-    //         type: 'Label',
-    //         text: config.text,
-    //         columnSpan: 6
-    //     });
+  private handleDown = (pointer: Phaser.Input.Pointer): void => {
+    if (!this._maskBounds?.contains(pointer.x, pointer.y)) return;
 
-    //     // // 创建右侧内容（如果有）
-    //     // if (config.rightContent) {
-    //     //     rowItems.push(this.createRightContentConfig(config.rightContent));
-    //     // }
+    this._scrollState.isScrolling = true;
+    this._scrollState.start = pointer[this._direction];
+    this._scrollState.current = this._content![this._direction];
+    this._scrollState.momentum = 0;
+  };
 
-    //     item.addRow(rowItems);
+  private handleMove = (pointer: Phaser.Input.Pointer): void => {
+    if (!this._scrollState.isScrolling || !pointer.isDown) return;
 
-    //     // 添加分隔线
-    //     const line = this.scene.add.line(0, itemHeight, 0, 0, width - 20, 0, 0xcccccc);
-    //     line.setOrigin(0);
-    //     item.add(line);
+    const delta = pointer[this._direction] - this._scrollState.start;
+    const newPos = this.calculateNewPosition(this._scrollState.current + delta);
 
-    //     return item;
-    // }
+    this.updateContentPosition(newPos);
+    this._scrollState.momentum = pointer.velocity[this._direction];
 
-    // private createRightContentConfig(config: any): any {
-    //     switch (config.type) {
-    //         case 'TextButton':
-    //             return {
-    //                 type: 'TextButton',
-    //                 text: config.text,
-    //                 columnSpan: 3
-    //             };
-    //         case 'Checkbox':
-    //             return {
-    //                 type: 'Checkbox',
-    //                 checked: config.checked,
-    //                 columnSpan: 1
-    //             };
-    //         case 'ProgressBar':
-    //             return {
-    //                 type: 'ProgressBar',
-    //                 value: config.value,
-    //                 columnSpan: 3
-    //             };
-    //         case 'Slider':
-    //             return {
-    //                 type: 'Slider',
-    //                 value: config.value,
-    //                 columnSpan: 3
-    //             };
-    //         default:
-    //             return {
-    //                 type: 'Label',
-    //                 text: config.text,
-    //                 columnSpan: 3
-    //             };
-    //     }
-    // }
+    this.updateScrollBarPosition();
+    this.updateVisibleItems();
+  };
 
-    // public onDrag(pointer: Phaser.Input.Pointer, dragX: number, dragY: number) {
-    //     const contentHeight = this._allItems.length * (this._config.itemHeight! + this._config.padding!);
-    //     const viewHeight = this._config.height - this._config.padding! * 2;
+  private handleUp = (): void => {
+    if (!this._scrollState.isScrolling) return;
 
-    //     if (contentHeight > viewHeight) {
-    //         const newY = Phaser.Math.Clamp(this._content.y + (dragY - pointer.prevPosition.y), viewHeight - contentHeight, 0);
-    //         this._content.setY(newY + this._config.padding!);
-            
-    //         // 计算新的起始索引
-    //         const newStartIndex = Math.floor(-newY / (this._config.itemHeight! + this._config.padding!));
-    //         if (newStartIndex !== this._startIndex) {
-    //             this._startIndex = newStartIndex;
-    //             this.renderVisibleItems();
-    //         }
+    this._scrollState.isScrolling = false;
+    if (Math.abs(this._scrollState.momentum) > 0.5) {
+      this.applyScrollMomentum();
+    }
+  };
 
-    //         this.updateScrollBar();
-    //     }
-    // }
+  private calculateNewPosition(position: number): number {
+    return ScrollUtils.calculateNewPosition(
+      position,
+      this._direction,
+      this._direction === "y" ? this.Height : this.Width,
+      this.scrollSize,
+      this._config!.padding || {},
+      this._config?.borderWidth ?? 0
+    );
+  }
 
-    // private updateScrollBar() {
-    //     const { width, height, padding = 0 } = this._config;
-    //     const contentHeight = this._allItems.length * (this._config.itemHeight! + padding);
-    //     const viewHeight = height - padding * 2;
+  private updateContentPosition(position: number): void {
+    if (this._direction === "y") {
+      this._content?.setY(position);
+    } else {
+      this._content?.setX(position);
+    }
+  }
 
-    //     this._scrollBar.clear();
+  private applyScrollMomentum(): void {
+    // New position after calculating scroll momentum
+    // Based on the current position plus the momentum value, the momentum value will be amplified according to its absolute value
+    // The greater the momentum, the farther the rolling distance
+    const newPos = this.calculateNewPosition(
+      this._content![this._direction] +
+        this._scrollState.momentum *
+          (1 + Math.abs(this._scrollState.momentum) * 0.01)
+    );
+    this.scene.tweens.add({
+      targets: this._content,
+      [this._direction]: newPos,
+      duration: 500,
+      ease: Phaser.Math.Easing.Cubic.Out,
+      onUpdate: () => {
+        this.updateScrollBarPosition();
+        this.updateVisibleItems();
+      },
+    });
+  }
 
-    //     if (contentHeight > viewHeight) {
-    //         const scrollBarHeight = (viewHeight / contentHeight) * viewHeight;
-    //         const scrollBarY = (-this._content.y / contentHeight) * viewHeight + padding;
+  private updateScrollBarPosition(): void {
+    if (!this._scrollBar) return;
+    ScrollUtils.updateScrollBarPosition(
+      this._content!,
+      this._scrollBar!,
+      this._direction,
+      this._direction === "y" ? this.Height : this.Width,
+      this.scrollSize,
+      this._config!.padding || {}
+    );
+  }
 
-    //         this._scrollBar.fillStyle(0xcccccc, 0.8);
-    //         this._scrollBar.fillRoundedRect(width - 10, scrollBarY, 5, scrollBarHeight, 2);
-    //     }
-    // }
+  private updateVisibleItems(): void {
+    if (!this._content) return;
+    if (this._scrollBar) {
+      this._scrollBar.visible = this.scrollSize > this._config!.height;
+    }
+    ScrollUtils.updateVisibleItems(
+      this._content!,
+      this._direction,
+      this._direction === "y" ? this.Height : this.Width
+    );
+  }
 
-    // private createBg(x: number, y: number, width: number, height: number, background: any) {
-    //     if (typeof background === 'string' && !background.startsWith('#')) {
-    //         const bg = this.scene.make.image({ x, y, key: background });
-    //         bg.setDisplaySize(width, height);
-    //         bg.setOrigin(0);
-    //         return bg;
-    //     }
+  public get scrollSize(): number {
+    if (!this._content || this._content.list.length === 0) {
+      return 0;
+    }
 
-    //     const backgroundColor = background
-    //         ? ((typeof background === 'string' && background.startsWith('#')
-    //             ? Utils.hexColorToNumber(background) : background as number)) : 0xffffff;
+    return (
+      this._lastChild![this._direction] +
+      (this._direction === "y"
+        ? this._lastChild!.Height
+        : this._lastChild!.Width) +
+      (this._config?.padding?.all ??
+        (this._direction === "y" ? this.padding.bottom : this.padding.right) ??
+        0)
+    );
+  }
 
-    //     return this.scene.add.rectangle(x, y, width, height, backgroundColor).setOrigin(0);
-    // }
+  destroy(fromScene?: boolean): void {
+    super.destroy(fromScene);
+    this._content?.destroy(fromScene);
+    this._scrollBar?.destroy(fromScene);
+    this._mask?.destroy(fromScene);
+  }
 }

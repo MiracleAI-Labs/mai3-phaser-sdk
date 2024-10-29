@@ -114,6 +114,10 @@ export interface BaseConfig {
   originalId?: string;
   type?: string;
   columnSpan?: number;
+  // Array of child component configurations
+  childConfigs?: BaseConfig[];
+  // Callback function that is called after all children have been set asynchronously
+  handleSetChildrenAsyncEnd?: (children: Container[]) => void;
   [key: string]: any;
 }
 
@@ -250,12 +254,22 @@ export interface CheckboxGroupItem {
   value?: string;
 }
 
+export interface ScrollState {
+  isScrolling: boolean;
+  start: number;
+  current: number;
+  momentum: number;
+}
+
+export type ScrollDirection = "x" | "y";
+
 export interface ListViewConfig extends BaseConfig {
   width: number;
   height: number;
-  padding?: number;
+  padding?: Padding;
   background?: string | number;
-  itemHeight?: number;
+  direction?: ScrollDirection;
+  showScrollbar?: boolean;
 }
 
 export interface ListViewItemConfig extends BaseConfig {
@@ -266,6 +280,16 @@ export interface ListViewItemConfig extends BaseConfig {
     text?: string;
     checked?: boolean;
   };
+}
+
+export interface ScrollBarConfig {
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  direction?: "x" | "y";
+  backgroundColor?: number;
+  barColor?: number;
 }
 
 export interface CheckboxGroupConfig extends BaseConfig {
@@ -309,8 +333,8 @@ export interface RoundedButtonConfig extends BaseButtonConfig {
   backgroundColor?: number;
   backgroundAlpha?: number;
   text?: string;
-  fontColor?: string
-  fontSize?: number
+  fontColor?: string;
+  fontSize?: number;
 }
 
 export interface NinePatchConfig extends BaseButtonConfig {
@@ -353,12 +377,12 @@ export interface ToastConfig extends LabelConfig {
   alignment?: Alignment;
   type?: "success" | "warn" | "error" | "info";
   animationType?:
-  | "fade"
-  | "slide"
-  | "slideDown"
-  | "slideUp"
-  | "scale"
-  | "bounce";
+    | "fade"
+    | "slide"
+    | "slideDown"
+    | "slideUp"
+    | "scale"
+    | "bounce";
   duration?: number;
   margin?: Margin;
 }
@@ -543,14 +567,14 @@ export interface TabsConfig extends BaseConfig {
   itemSpace?: number;
   padding?: number;
   texture?: string;
-  fontColor: string,
+  fontColor: string;
   onTabClick?: (index: number) => void;
 }
 
 export interface TabItem {
   title?: string;
   texture?: string;
-  activeImg: string
+  activeImg: string;
 }
 export interface ImageConfig extends BaseButtonConfig {
   id?: string;
@@ -587,6 +611,6 @@ export interface SpriteAnimConfig {
 //export type SpriteConfig = Phaser.Types.GameObjects.Sprite.SpriteConfig & BaseConfig;
 export interface SpriteConfig
   extends BaseButtonConfig,
-  Omit<Phaser.Types.GameObjects.Sprite.SpriteConfig, keyof BaseConfig> {
+    Omit<Phaser.Types.GameObjects.Sprite.SpriteConfig, keyof BaseConfig> {
   animConfigs?: SpriteAnimConfig[];
 }

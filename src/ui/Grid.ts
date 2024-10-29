@@ -254,16 +254,12 @@ export class Grid extends Panel {
     private handleDragEnd(pointer: Phaser.Input.Pointer): void {
         if (!this._draggingChild) return;
 
-        const draggingCellIndex = this._draggingChild.getData(CellIndex) + "";
+        const draggingCellIndex = this._draggingChild.getData(CellIndex);
         const draggingItem = this.getItemByIndex(draggingCellIndex);
         const targetItem = this.getChildAtPosition(draggingCellIndex, pointer);
     
         // resetPostion
         this._draggingChild.setPosition(this._originalPosition!.x, this._originalPosition!.y);
-    
-        if (targetItem) {
-            this.swapChildren(draggingItem!, targetItem);
-        }
     
         this._config?.handleDragEnd?.(draggingItem!, targetItem, pointer);
         this.cleanupDragState();
@@ -293,7 +289,7 @@ export class Grid extends Panel {
         this.positionSlotMap.set(oldKey, 0);
     }
 
-    private swapChildren(child1: Container, child2: Container): void {
+    public swapChildren(child1: Container, child2: Container): void {
         const targetIndex = this._content!.getIndex(child2);
         const originalIndex = this._content!.getIndex(child1);
         
