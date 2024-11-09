@@ -1,98 +1,142 @@
-import { BaseScene, Container, ListView, Sprite } from "../../../dist";
+import { BaseScene, Dialog, Container } from "../../../dist";
+import { BaseConfig, DialogConfig } from "../../../dist/types";
 export class ListViewDemo extends BaseScene {
-  private verticalListView!: ListView;
+  private dialog!: Dialog;
+  private goodImageIds: string[] = [];
   constructor() {
     super("ListViewDemo");
   }
 
   preload() {
     super.preload();
-
-    this.load.image("cat0", "/assets/images/cat0.png");
-    this.load.image("cat1", "/assets/images/cat1.png");
-    this.load.image("hexagon", "/assets/images/hexagon.png");
-    this.load.image("cushion", "/assets/images/cushion.png");
-    this.load.image("scoreBox", "/assets/images/scoreBox.png");
-    this.load.image("play", "/assets/images/button/play.png");
   }
 
   create() {
-    this.createListView();
+    this.createDialog();
     this.createReturnButton();
+    this.dialog.show();
   }
 
-  private createListView() {
-    this.verticalListView = new ListView(this, {
-      x: 150,
-      y: 150,
-      width: 600,
-      height: 800,
-      borderWidth: 10,
-      backgroundColor: 0xffffff,
-      padding: { all: 0 },
-      direction: "y",
-      showScrollbar: true,
-    });
-    this.add.existing(this.verticalListView);
-
-    this.anims.create({
-      key: "walk",
-      frames: [{ key: "cat0" }, { key: "cat1" }],
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: "stop",
-      frames: [{ key: "cat0" }],
-      frameRate: 10,
-      repeat: 1,
-    });
-
-    this.addListViewItems(this.verticalListView);
-  }
-
-  private async addListViewItems(listView: ListView) {
-    const cellItems: any[] = [];
-    for (let row = 0; row < 100; row++) {
-      cellItems[row] = {
-        type: "Container",
-        childConfigs: [],
-        width: 600,
-        height: 150,
-        handleSetChildrenAsyncEnd: (children: Container[]) => {
-          children.forEach((child: Container) => {
-            if (child.Type === "Sprite") {
-              const sprite = child as Sprite;
-              sprite.instance?.play("walk");
-            }
-          });
+  private createDialog() {
+    const dialogConfig: DialogConfig = {
+      width: 500,
+      height: 900,
+      frame: 0,
+      leftWidth: 20,
+      rightWidth: 20,
+      topHeight: 60,
+      bottomHeight: 60,
+      texture: "l-bg",
+      isShowCloseButton: true,
+      closeButtonConfig: {
+        type: "ImageButton",
+        width: 70,
+        height: 70,
+        texture: "l-close",
+        handleUp: {
+          handleFn: () => {
+            this.dialog.hide();
+          },
         },
-      };
-      cellItems[row].childConfigs = [
+      },
+    };
+
+    this.dialog = this.mai3.add.dialog(dialogConfig);
+    this.dialog.hide();
+
+    this.dialog.addItems([
+      {
+        x: 10,
+        y: 200,
+        width: 480,
+        height: 640,
+        borderWidth: 0,
+        padding: { all: 0 },
+        direction: "y",
+        showScrollbar: false,
+        type: "ListView",
+        itemHeight: 150,
+        itemDatas: this.createListViewItemDatas(),
+      },
+    ]);
+
+    // Add tween animation to create swing effect
+    this.goodImageIds.forEach((id) => {
+      this.tweens.add({
+        targets: this.dialog.findChild(id),
+        angle: 15,
+        duration: 1000,
+        ease: "Sine.easeInOut",
+        yoyo: true,
+        repeat: -1,
+      });
+    });
+
+    this.createDialogTitle();
+  }
+
+  private createListViewItemDatas(): BaseConfig[][] {
+    const itemDatas: BaseConfig[][] = [];
+    const actionButtonTextures: BaseConfig[] = [
+      {
+        texture: "l-blue-button",
+        text: "免费",
+        textStyle: {
+          fontFamily: "Arial",
+          fontSize: "12px",
+          color: "#FFFFFF",
+        },
+      },
+      {
+        texture: "l-yellow-button",
+        text: "1500",
+        textStyle: {
+          fontFamily: "Arial",
+          fontSize: "12px",
+          color: "#7D4813",
+        },
+        icon: "l-gold",
+        iconWidth: 24,
+        iconHeight: 24,
+      },
+      {
+        texture: "l-green-button",
+        text: "5",
+        textStyle: { fontFamily: "Arial", fontSize: "12px", color: "#2E4F09" },
+        icon: "l-fish",
+        iconWidth: 24,
+        iconHeight: 24,
+      },
+      {
+        texture: "l-grey-button",
+        text: "",
+      },
+    ];
+    for (let row = 0; row < 100; row++) {
+      itemDatas[row] = [
         {
           type: "Image",
-          key: "scoreBox",
-          width: 580,
-          height: 140,
+          key: "l-item",
+          width: 450,
+          height: 120,
           x: 0,
           y: 0,
         },
         {
           id: "sprite_" + row,
           type: "Sprite",
-          key: `cat${row % 2}`,
-          x: 148,
-          y: 25,
-          width: 55.8,
-          height: 59.4,
+          key: `l-cat${(row % 4) + 1}`,
+          x: 72,
+          y: 10,
+          width: 100,
+          height: 100,
         },
         {
           type: "Image",
-          key: "hexagon",
-          width: 30,
-          height: 30,
-          x: 176,
+          key: "l-star",
+          width: 34,
+          height: 40,
+          x: 140,
           y: 15,
         },
         {
@@ -100,51 +144,136 @@ export class ListViewDemo extends BaseScene {
           text: `${row}`,
           textStyle: {
             fontFamily: "Arial",
-            color: "#000",
+            color: "#C4954E",
             fontSize: "12px",
           },
-          x: row > 9 ? 183.5 : 187.5,
-          y: 22,
+          x: row > 9 ? 150 : 154,
+          y: 28,
         },
         {
           type: "Text",
           text: `速度`,
           textStyle: {
             fontFamily: "Arial",
-            color: "#000",
+            color: "#805638",
             fontSize: "12px",
           },
-          x: 410,
-          y: 26,
+          x: 300,
+          y: 37,
         },
         {
           type: "Label",
-          width: 100,
-          height: 20,
-          textAlign: "center",
-          text: `+9999T/s`,
+          x: 340,
+          y: 30,
+          text: "+59/s",
+          width: 80,
+          height: 26,
+          texture: "l-speed",
           textStyle: {
             fontFamily: "Arial",
-            color: "#000",
             fontSize: "12px",
+            color: "#2E4F09",
           },
-          borderWidth: 1,
-          borderColor: 0x000000,
-          backgroundColor: 0xA0C75B,
-          x: 440,
-          y: 22,
+          padding: { x: 12, y: 8 },
         },
         {
-          type: "ImageButton",
-          texture: "play",
-          width: 80,
+          type: "Image",
+          key: "l-gold",
+          width: 22,
+          height: 22,
+          x: 390,
+          y: 33,
+        },
+        {
+          type: "TextButton",
+          width: 124,
           height: 30,
-          x: 460,
-          y: 50,
+          x: 300,
+          y: 64,
+          ...actionButtonTextures[row % 4],
         },
       ];
+      if (row % 4 === 2) {
+        const id = "good_" + row;
+        this.goodImageIds.push(id);
+        itemDatas[row].push({
+          id: id,
+          type: "Image",
+          key: "l-good",
+          width: 62,
+          height: 42,
+          x: 390,
+          y: 55,
+        });
+      }
     }
-    listView.setItemsAsync(cellItems);
+    return itemDatas;
+  }
+
+  private createDialogTitle() {
+    this.dialog.addItems([
+      {
+        type: "Text",
+        x: 140,
+        y: 70,
+        text: "猫店",
+        width: 220,
+        textAlign: "center",
+        textStyle: {
+          fontFamily: "Arial",
+          fontSize: "20px",
+          color: "#714221",
+        },
+      },
+      {
+        type: "Image",
+        key: "l-gold",
+        width: 40,
+        height: 40,
+        x: 50,
+        y: 130,
+      },
+      {
+        type: "Text",
+        x: 90,
+        y: 140,
+        text: "22275K",
+        textAlign: "center",
+        textStyle: {
+          fontFamily: "Arial",
+          fontSize: "20px",
+          color: "#805638",
+        },
+      },
+      {
+        type: "Image",
+        key: "l-fish",
+        width: 40,
+        height: 40,
+        x: 300,
+        y: 130,
+      },
+      {
+        type: "Text",
+        x: 350,
+        y: 140,
+        text: "0",
+        textAlign: "center",
+        textStyle: {
+          fontFamily: "Arial",
+          fontSize: "20px",
+          color: "#805638",
+        },
+      },
+      {
+        type: "ImageButton",
+        texture: "l-add",
+        width: 40,
+        height: 40,
+        x: 370,
+        y: 130,
+      },
+    ]);
   }
 
   private createReturnButton() {

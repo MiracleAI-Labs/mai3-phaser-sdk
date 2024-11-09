@@ -3,11 +3,11 @@ import { PanelConfig } from '../types';
 import Utils from '../utils';
 import { BaseScene } from "../game";
 
-export class Panel extends Container {
+export class Panel<T extends PanelConfig = PanelConfig> extends Container<T> {
   protected bg?: Phaser.GameObjects.RenderTexture | Phaser.GameObjects.NineSlice;
-  protected _config?: PanelConfig;
+  protected _config?: T;
 
-  constructor(scene: BaseScene, config: PanelConfig) {
+  constructor(scene: BaseScene, config: T) {
     super(scene, config);
     this._config = config;
     this.Type = 'Panel';
@@ -17,7 +17,7 @@ export class Panel extends Container {
     this.drawBackground();
   }
 
-  public reDrawBackground(config: PanelConfig): void {
+  public reDrawBackground(config: T): void {
     this._config = config;
     this.drawBackground();
   }
@@ -56,8 +56,8 @@ export class Panel extends Container {
       this.scene,
       this.bg! as Phaser.GameObjects.RenderTexture,
       0, 0, width, height,
-      borderWidth, radius, borderColor,
-      backgroundColor, backgroundAlpha
+      borderWidth, radius, borderColor as number,
+      backgroundColor as number, backgroundAlpha
     ) || this.bg;
   }
 
@@ -98,10 +98,6 @@ export class Panel extends Container {
     this.reDrawBackground(this._config!);
   }
   
-  get config(): PanelConfig {
-    return this._config!;
-  }
-
   destroy(fromScene?: boolean): void {
     if (this.bg) {
       this.bg.destroy();

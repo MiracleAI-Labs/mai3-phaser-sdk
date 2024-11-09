@@ -19,11 +19,11 @@ export class DemoScene extends BaseScene {
             x: 100,
             y: 100,
             width: 600,
-            height: 400,
+            height: 500,
             padding: { all: 20 },
             rowGap: 10,
             columnGap: 10,
-            rows: 5,
+            rows: 6,
             columns: 3,
             autoFill: true,
             draggable: false,
@@ -51,6 +51,7 @@ export class DemoScene extends BaseScene {
             { name: 'Text Box Demo', scene: 'TextBoxDemo', color: 0x8BC34A },
             { name: 'Sprite Demo', scene: 'SpriteDemo', color: 0x4CA600 },
             { name: 'TON Demo', scene: 'TonDemo', color: 0x009688 },
+            { name: 'ScrollView Demo', scene: 'ScrollViewDemo', color: 0x009688 },
             { name: 'ListView Demo', scene: 'ListViewDemo', color: 0x009688 },
         ];
 

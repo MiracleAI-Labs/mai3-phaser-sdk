@@ -13,8 +13,9 @@ import {
   VolumeSlider,
   Image,
   Sprite,
-  ListView,
+  ScrollView,
   Grid,
+  ListView,
 } from "../ui/index";
 import { BaseScene } from "../game";
 import { BaseConfig } from "../types";
@@ -35,8 +36,9 @@ class UIComponentFactory {
     VolumeSlider,
     Text,
     Sprite,
-    ListView,
+    ScrollView,
     Grid,
+    ListView,
   };
 
   public static createChildFromConfig(

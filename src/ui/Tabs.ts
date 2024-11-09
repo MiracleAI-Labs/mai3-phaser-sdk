@@ -6,9 +6,9 @@ import { Label } from './Label';
 import { Text } from './Text';
 import { Panel } from './Panel';
 
-export class Tabs extends Container {
+export class Tabs extends Container<TabsConfig> {
     private _items?: LinearLayout;
-    private _config: TabsConfig;
+    protected _config: TabsConfig;
     private _root?: Panel;
     public image?: Phaser.GameObjects.Image;
 
@@ -27,7 +27,7 @@ export class Tabs extends Container {
         const {
             width,
             height = 0,
-            texture = '', background = 0x000000
+            texture = '', backgroundColor = 0x000000
         } = this._config!;
 
         const tabsWidth = width || this.scene.scale.width;
@@ -44,7 +44,7 @@ export class Tabs extends Container {
                 x: 0, y: 0,
                 width: tabsWidth,
                 height,
-                backgroundColor: background,
+                backgroundColor: backgroundColor,
                 borderWidth: 0,
                 radius: 0
             });
@@ -61,7 +61,7 @@ export class Tabs extends Container {
         const itemCount = this._config.items?.length || 0;
         const tabsWidth = this._config.width || this.scene.scale.width;
         const itemWidth = tabsWidth / itemCount;
-        const padding = this._config.padding || 0;
+        const padding = this._config.padding?.all || 0;
 
         const configHeight = this._config.height || 40;
         const multiple = 0.8;
@@ -131,8 +131,4 @@ export class Tabs extends Container {
         this.createTabItems(index)
     }
 
-
-    get config(): TabsConfig {
-        return this._config!;
-    }
 }

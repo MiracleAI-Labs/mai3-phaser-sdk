@@ -3,8 +3,8 @@ import { SpriteConfig, SpriteAnimConfig } from '../types';
 import Utils from "../utils";
 import { BaseButton } from "./BaseButton";
 
-export class Sprite extends BaseButton {
-  private _config: SpriteConfig;
+export class Sprite extends BaseButton<SpriteConfig> {
+  protected _config: SpriteConfig;
   public instance?: Phaser.GameObjects.Sprite;
 
   constructor(scene: BaseScene, config: SpriteConfig) {
@@ -36,6 +36,7 @@ export class Sprite extends BaseButton {
   }
 
   public createAnimsSprite(animKey: string, config: SpriteAnimConfig) {
+    if (this.scene.anims.exists(animKey)) return;
     if (Array.isArray(config.frames)) {
       this.scene.anims.create({
         key: animKey,
@@ -77,11 +78,6 @@ export class Sprite extends BaseButton {
   public setData<T extends any>(key: (string | T), data?: any): this {
     this.instance?.setData(key, data)
     return this
-  }
-
-
-  get config(): SpriteConfig {
-    return this._config!;
   }
 
   destroy(fromScene?: boolean) {

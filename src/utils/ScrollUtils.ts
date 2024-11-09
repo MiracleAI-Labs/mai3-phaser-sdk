@@ -1,6 +1,6 @@
 import { Container } from "../ui/Container";
 import { ScrollBar } from "../ui/ScrollBar";
-import { ScrollDirection } from "../types";
+import { Padding, ScrollDirection } from "../types";
 
 class ScrollUtils {
   static calculateNewPosition(
@@ -8,7 +8,7 @@ class ScrollUtils {
     direction: ScrollDirection,
     viewSize: number,
     scrollSize: number,
-    padding: any,
+    padding: Padding,
     borderWidth: number
   ): number {
     const max =
@@ -24,7 +24,7 @@ class ScrollUtils {
     direction: ScrollDirection,
     viewSize: number,
     scrollSize: number,
-    padding: any
+    padding: Padding
   ): void {
     if (!scrollBar) return;
 

@@ -1,16 +1,16 @@
 import { BaseScene } from "../game";
 import { Checkbox } from './Checkbox';
-import { CheckboxGroupConfig, CheckboxConfig } from '../types';
+import { CheckboxGroupConfig, CheckboxConfig, CheckboxGroupItem } from '../types';
 import { BaseButton } from "./BaseButton";
 
-export class CheckboxGroup extends BaseButton {
+export class CheckboxGroup extends BaseButton<CheckboxGroupConfig> {
     private _checkboxes: Checkbox[] = [];
     private _selectedValues: string[] = [];
     private _selectedIndexes: number[] = [];
     private _checkboxGroupWidth: number = 0;
     private _checkboxGroupHeight: number = 0;
     private _checkboxConfigs: CheckboxConfig[] = [];
-    private _config: CheckboxGroupConfig;
+    protected _config: CheckboxGroupConfig;
 
     constructor(scene: BaseScene, config: CheckboxGroupConfig) {
         super(scene, config);
@@ -52,7 +52,7 @@ export class CheckboxGroup extends BaseButton {
         });
     }
 
-    private _createCheckbox(item: any, index: number, x: number, y: number): Checkbox {
+    private _createCheckbox(item: CheckboxGroupItem, index: number, x: number, y: number): Checkbox {
         let ckbConfig = {
             x, y,
             text: item.text,
@@ -133,10 +133,6 @@ export class CheckboxGroup extends BaseButton {
         this._checkboxGroupWidth = 0;
         this._checkboxGroupHeight = 0;
         this._initCheckboxGroup();
-    }
-
-    get config(): CheckboxGroupConfig {
-        return this._config!;
     }
 
     public destroy(fromScene?: boolean): void {

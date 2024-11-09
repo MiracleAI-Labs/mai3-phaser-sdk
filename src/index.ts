@@ -20,9 +20,10 @@ import { Mai3Plugin } from "./plugins/Mai3Plugin";
 import { BaseScene, Mai3Game } from "./game";
 import * as Types from "./types";
 import Utils from "./utils";
-import { ListView } from "./ui/ListView";
+import { ScrollView } from "./ui/ScrollView";
 import { Sprite } from "./ui/Sprite";
 import { ConnectWalletButton } from "./ui/ConnectWalletButton";
+import { ListView } from "./ui/ListView";
 
 export {
   BaseScene,
@@ -44,13 +45,14 @@ export {
   TextButton,
   Toast,
   VolumeSlider,
-  ListView,
+  ScrollView,
   Sprite,
   ConnectWalletButton,
   Mai3Plugin,
   Mai3Game,
   Types,
   Utils,
+  ListView,
 };
 
 const Mai3 = {
@@ -73,13 +75,14 @@ const Mai3 = {
   TextButton: TextButton,
   Toast: Toast,
   VolumeSlider: VolumeSlider,
-  ListView: ListView,
+  ScrollView: ScrollView,
   Sprite: Sprite,
   ConnectWalletButton: ConnectWalletButton,
   Mai3Plugin: Mai3Plugin,
   Mai3Game: Mai3Game,
   Types: Types,
   Utils: Utils,
+  ListView: ListView,
 };
 
 export default Mai3;

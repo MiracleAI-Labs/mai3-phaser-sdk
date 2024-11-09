@@ -31,6 +31,7 @@
 - ✅ Toast
 - ✅ VolumeSlider
 - ✅ Sprite
+- ✅ ScrollView
 - ✅ ListView
 
 ## future implementation:

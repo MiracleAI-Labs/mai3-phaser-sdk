@@ -2,8 +2,8 @@ import { BaseScene } from "../game";
 import { ImageButtonConfig } from '../types';
 import { BaseButton } from "./BaseButton";
 
-export class ImageButton extends BaseButton {
-  private _config: ImageButtonConfig;
+export class ImageButton extends BaseButton<ImageButtonConfig> {
+  protected _config: ImageButtonConfig;
   public image?: Phaser.GameObjects.NineSlice;
 
   constructor(scene: BaseScene, config: ImageButtonConfig) {
@@ -46,10 +46,6 @@ export class ImageButton extends BaseButton {
 
     this.RefreshBounds();
     this.updateConfig(config);
-  }
-
-  get config(): ImageButtonConfig {
-    return this._config!;
   }
 
   destroy(fromScene?: boolean) {

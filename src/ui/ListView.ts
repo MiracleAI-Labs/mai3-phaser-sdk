@@ -1,283 +1,83 @@
-import { Container } from "./Container";
 import { BaseScene } from "../game";
-import {
-  ListViewConfig,
-  ScrollBarConfig,
-  ScrollState,
-  ScrollDirection,
-  BaseConfig,
-} from "../types";
-import { ScrollBar } from "./ScrollBar";
-import ScrollUtils from "../utils/ScrollUtils";
-
-interface ItemPosition {
-  x: number;
-  y: number;
-}
-
-export class ListView extends Container {
-  private _content?: Container;
-  private _lastChild?: Container;
-  private _mask?: Phaser.GameObjects.Graphics;
-  private _maskBounds?: Phaser.Geom.Rectangle;
-  private _direction: ScrollDirection;
-  private _scrollBar?: ScrollBar;
-  private readonly _scrollState: ScrollState;
-  protected _config?: ListViewConfig;
-
+import { BaseConfig, ListViewConfig } from "../types";
+import { ScrollView, ItemPosition } from "./ScrollView";
+import { Container } from "./Container";
+export class ListView extends ScrollView<ListViewConfig> {
+  private _lastItem?: Container;
   constructor(scene: BaseScene, config: ListViewConfig) {
     super(scene, config);
     this.Type = "ListView";
-    this._direction = config.direction ?? "y";
-    this._scrollState = {
-      isScrolling: false,
-      start: 0,
-      current: 0,
-      momentum: 0,
-    };
-    this._config = config;
-
-    this.initialize();
+    this.setItemDatas(config?.itemDatas || []);
   }
 
-  private initialize(): void {
-    this.setupContent();
-    this.drawBackground();
-    this.setupScrollBar();
-    this.setupMask();
-    this.setupEvents();
-    this.updateScrollBarPosition();
-    this.updateVisibleItems();
+  updateConfig(config?: ListViewConfig): void {
+    super.updateConfig(config);
+    this.setItemDatas(config?.itemDatas || []);
   }
 
-  private setupContent(): void {
-    this._content = new Container(this.scene);
-    this._content.setPosition(
-      this.padding.left + (this._config?.borderWidth ?? 0),
-      this.padding.top + (this._config?.borderWidth ?? 0)
-    );
-    this._content.setSize(
-      this._config!.width - this.padding.left - this.padding.right,
-      this._config!.height - this.padding.top - this.padding.bottom
-    );
-    this.addChildAt(this._content, 1);
-    this.RefreshBounds();
-  }
-
-  private setupMask(): void {
-    this._mask = this.scene.add.graphics();
-    this._mask
-      .clear()
-      .fillStyle(0x000000)
-      .fillRect(
-        this.x + (this._config!.borderWidth ?? 0),
-        this.y + (this._config!.borderWidth ?? 0),
-        this.Width - (this._config!.borderWidth ?? 0) * 2,
-        this.Height - (this._config!.borderWidth ?? 0) * 2
-      );
-
-    this._content?.setMask(
-      new Phaser.Display.Masks.GeometryMask(this.scene, this._mask)
-    );
-
-    this._maskBounds = new Phaser.Geom.Rectangle(
-      this.x,
-      this.y,
-      this.Width,
-      this.Height
-    );
-  }
-
-  private setupScrollBar(): void {
-    if (!this._config!.showScrollbar) return;
-    const scrollBarConfig: ScrollBarConfig = this.createScrollBarConfig();
-    this._scrollBar = new ScrollBar(this.scene, scrollBarConfig);
-    this.add(this._scrollBar);
-  }
-
-  private createScrollBarConfig(): ScrollBarConfig {
-    const borderWidth = this._config?.borderWidth ?? 0;
-    return this._direction === "y"
-      ? {
-          x: this.Width - borderWidth - 6,
-          y: borderWidth,
-          width: 6,
-          height: this.Height - borderWidth * 2,
-          direction: "y",
-        }
-      : {
-          x: borderWidth,
-          y: this.Height - borderWidth - 6,
-          width: this.Width - borderWidth * 2,
-          height: 6,
-          direction: "x",
-        };
-  }
-
-  public addItem(child: Container): Container {
+  public addChild(child: Container): Container {
+    const _child = super.addChild(child);
     const position = this.calculateNextItemPosition();
-    child.setPosition(position.x, position.y);
-    this._content?.addChild(child);
-    this._lastChild = child;
-    this.updateScrollBarPosition();
-    this.updateVisibleItems();
+    _child.setPosition(position.x, position.y);
+    this._lastItem = _child;
     return child;
   }
 
-  private calculateNextItemPosition(): ItemPosition {
-    if (!this._lastChild) return { x: 0, y: 0 };
+  public addItems(childConfigs: BaseConfig[][]): void {
+    for (const childConfig of childConfigs) {
+      const child = this.scene.getChild({
+        type: "Container",
+        width: this.config.width,
+        height: this._config?.itemHeight,
+        childConfigs: childConfig,
+      });
+      this.addChild(child);
+    }
+  }
 
+  private calculateNextItemPosition(): ItemPosition {
+    if (!this._lastItem) return { x: 0, y: 0 };
     return {
-      x:
-        this._direction === "x" ? this._lastChild.x + this._lastChild.Width : 0,
-      y:
-        this._direction === "y"
-          ? this._lastChild.y + this._lastChild.Height
-          : 0,
+      x: this._direction === "x" ? this._lastItem.x + this._lastItem.Width : 0,
+      y: this._direction === "y" ? this._lastItem.y + this._lastItem.Height : 0,
     };
   }
 
-  public async setItemsAsync(childConfigs?: BaseConfig[]): Promise<any> {
-    if (!childConfigs) {
-      return;
-    }
-    const UIComponentFactory = await import("../utils/UIComponentFactory");
-    for (const config of childConfigs) {
-      const child = UIComponentFactory.default.createChildFromConfig(
-        this.scene,
-        config
-      );
-      this.addItem(child);
-    }
-    this._config?.handleSetChildrenAsyncEnd?.(this._content?.getAll() ?? []);
+  public setChildren(childConfigs?: BaseConfig[]): void {
+    // ListView has not implemented this method
   }
 
-  public getItemsAtIndex(index: number): Container[] {
-    return (this._content?.getAll()[index] as Container)?.getAll() ?? [];
+  public setItemDatas(itemDatas: BaseConfig[][]): void {
+    if (!this._config) return;
+    this.config.itemDatas = itemDatas;
+    this.updateItems();
   }
 
-  private setupEvents(): void {
-    this.setInteractive();
-    this.scene.input.on("pointerdown", this.handleDown, this);
-    this.scene.input.on("pointermove", this.handleMove, this);
-    this.scene.input.on("pointerup", this.handleUp, this);
-  }
-
-  private handleDown = (pointer: Phaser.Input.Pointer): void => {
-    if (!this._maskBounds?.contains(pointer.x, pointer.y)) return;
-
-    this._scrollState.isScrolling = true;
-    this._scrollState.start = pointer[this._direction];
-    this._scrollState.current = this._content![this._direction];
-    this._scrollState.momentum = 0;
-  };
-
-  private handleMove = (pointer: Phaser.Input.Pointer): void => {
-    if (!this._scrollState.isScrolling || !pointer.isDown) return;
-
-    const delta = pointer[this._direction] - this._scrollState.start;
-    const newPos = this.calculateNewPosition(this._scrollState.current + delta);
-
-    this.updateContentPosition(newPos);
-    this._scrollState.momentum = pointer.velocity[this._direction];
-
-    this.updateScrollBarPosition();
-    this.updateVisibleItems();
-  };
-
-  private handleUp = (): void => {
-    if (!this._scrollState.isScrolling) return;
-
-    this._scrollState.isScrolling = false;
-    if (Math.abs(this._scrollState.momentum) > 0.5) {
-      this.applyScrollMomentum();
-    }
-  };
-
-  private calculateNewPosition(position: number): number {
-    return ScrollUtils.calculateNewPosition(
-      position,
-      this._direction,
-      this._direction === "y" ? this.Height : this.Width,
-      this.scrollSize,
-      this._config!.padding || {},
-      this._config?.borderWidth ?? 0
-    );
-  }
-
-  private updateContentPosition(position: number): void {
-    if (this._direction === "y") {
-      this._content?.setY(position);
+  public updateItems(): void {
+    if (!this._config || !this._content) return;
+    let all = this._content?.getAll();
+    if (!all || all?.length < this._config.itemDatas.length) {
+      this._content?.removeAll(true);
+      this._lastItem = undefined;
+      for (let i = 0; i < this._config.itemDatas.length; i++) {
+        const child = this.scene.getChild({
+          type: "Container",
+          childConfigs: this._config.itemDatas[i] || [],
+          width: this.config.width,
+          height: this._config.itemHeight,
+        });
+        this.addChild(child);
+      }
     } else {
-      this._content?.setX(position);
+      all = this._content!.getAll();
+      for (let i = 0; i < all.length; i++) {
+        const item = all[i];
+        if (item && this._config.itemDatas[i]) {
+          (all[i] as Container).config.childConfigs =
+            this._config.itemDatas[i];
+          (all[i] as Container).reDraw((all[i] as Container).config);
+        }
+      }
     }
-  }
-
-  private applyScrollMomentum(): void {
-    // New position after calculating scroll momentum
-    // Based on the current position plus the momentum value, the momentum value will be amplified according to its absolute value
-    // The greater the momentum, the farther the rolling distance
-    const newPos = this.calculateNewPosition(
-      this._content![this._direction] +
-        this._scrollState.momentum *
-          (1 + Math.abs(this._scrollState.momentum) * 0.01)
-    );
-    this.scene.tweens.add({
-      targets: this._content,
-      [this._direction]: newPos,
-      duration: 500,
-      ease: Phaser.Math.Easing.Cubic.Out,
-      onUpdate: () => {
-        this.updateScrollBarPosition();
-        this.updateVisibleItems();
-      },
-    });
-  }
-
-  private updateScrollBarPosition(): void {
-    if (!this._scrollBar) return;
-    ScrollUtils.updateScrollBarPosition(
-      this._content!,
-      this._scrollBar!,
-      this._direction,
-      this._direction === "y" ? this.Height : this.Width,
-      this.scrollSize,
-      this._config!.padding || {}
-    );
-  }
-
-  private updateVisibleItems(): void {
-    if (!this._content) return;
-    if (this._scrollBar) {
-      this._scrollBar.visible = this.scrollSize > this._config!.height;
-    }
-    ScrollUtils.updateVisibleItems(
-      this._content!,
-      this._direction,
-      this._direction === "y" ? this.Height : this.Width
-    );
-  }
-
-  public get scrollSize(): number {
-    if (!this._content || this._content.list.length === 0) {
-      return 0;
-    }
-
-    return (
-      this._lastChild![this._direction] +
-      (this._direction === "y"
-        ? this._lastChild!.Height
-        : this._lastChild!.Width) +
-      (this._config?.padding?.all ??
-        (this._direction === "y" ? this.padding.bottom : this.padding.right) ??
-        0)
-    );
-  }
-
-  destroy(fromScene?: boolean): void {
-    super.destroy(fromScene);
-    this._content?.destroy(fromScene);
-    this._scrollBar?.destroy(fromScene);
-    this._mask?.destroy(fromScene);
   }
 }

@@ -4,7 +4,7 @@ import { BaseScene } from "../game";
 import { Label } from './Label';
 import { TextBox } from './TextBox';
 
-export class TextArea extends TextBox {
+export class TextArea extends TextBox<TextBoxConfig> {
     protected _config: TextBoxConfig;
     declare label: Label;
     declare selection: Phaser.GameObjects.Rectangle;
@@ -185,10 +185,6 @@ export class TextArea extends TextBox {
 
             this.setCursorPosition(cursorPosition);
         }
-    }
-
-    get config(): TextBoxConfig {
-        return this._config!;
     }
     
     destroy(fromScene?: boolean): void {

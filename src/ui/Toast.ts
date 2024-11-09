@@ -10,8 +10,8 @@ const DefaultTextStyle = {
   color: '#000000',
 };
 
-export class Toast extends Container {
-  private _config: ToastConfig;
+export class Toast extends Container<ToastConfig> {
+  protected _config: ToastConfig;
   private label?: Label;
   private tween?: Phaser.Tweens.Tween;
   private autoHideTimer?: Phaser.Time.TimerEvent;

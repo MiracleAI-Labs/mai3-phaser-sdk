@@ -86,6 +86,24 @@ export class Preloader extends BaseScene {
         //button
         this.load.image('imgBtn', 'assets/images/button/img-btn.png');
 
+        // listview
+        this.load.image("l-bg", "/assets/images/listview/bg.png");
+        this.load.image("l-add", "/assets/images/listview/add.png");
+        this.load.image("l-blue-button", "/assets/images/listview/blue-button.png");
+        this.load.image("l-cat1", "/assets/images/listview/cat1.png");
+        this.load.image("l-cat2", "/assets/images/listview/cat2.png");
+        this.load.image("l-cat3", "/assets/images/listview/cat3.png");
+        this.load.image("l-cat4", "/assets/images/listview/cat4.png");
+        this.load.image("l-fish", "/assets/images/listview/fish.png");
+        this.load.image("l-gold", "/assets/images/listview/gold.png");
+        this.load.image("l-good", "/assets/images/listview/good.png");
+        this.load.image("l-green-button", "/assets/images/listview/green-button.png");
+        this.load.image("l-grey-button", "/assets/images/listview/grey-button.png");
+        this.load.image("l-item", "/assets/images/listview/item.png");
+        this.load.image("l-speed", "/assets/images/listview/speed.png");
+        this.load.image("l-yellow-button", "/assets/images/listview/yellow-button.png");
+        this.load.image("l-star", "/assets/images/listview/star.png");
+        this.load.image("l-close", "/assets/images/listview/close.png");
 
 
         // let progressBar: ProgressBar;

@@ -10,7 +10,7 @@ const defaultStyle: TextStyle = {
   color: '#fff',
 };
 
-export class Label extends Panel {
+export class Label extends Panel<LabelConfig> {
   private _width?: number;
   private _height?: number;
   private label?: Phaser.GameObjects.Text;
@@ -55,7 +55,7 @@ export class Label extends Panel {
     this.computedLabelSize();
     this.setLabelPosition(textAlign, padding);
 
-    console.log('config: ', this._config);
+    // console.log('config: ', this._config);
   }
 
   private createOrUpdateLabel(text: string, style: TextStyle): void {
@@ -77,7 +77,7 @@ export class Label extends Panel {
     this._config.width = this._width;
     this._config.height = this._height;
     
-    console.log(`this.label?.displayWidth: ${this.label?.displayWidth}, width: ${this._width}`);
+    // console.log(`this.label?.displayWidth: ${this.label?.displayWidth}, width: ${this._width}`);
   }
 
   private setLabelPosition(textAlign: string, padding: { top: number; left: number; right: number; }): void {
@@ -133,10 +133,6 @@ export class Label extends Panel {
 
   get Label(): Phaser.GameObjects.Text {
     return this.label!;
-  }
-
-  get config(): LabelConfig {
-    return this._config;
   }
 
   destroy(fromScene?: boolean): void {

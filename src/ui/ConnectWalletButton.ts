@@ -8,14 +8,14 @@ import { BaseButton } from './BaseButton';
 import { ImageButton } from './ImageButton';
 import { TonConnector } from '../game/TonConnetor';
 
-export class ConnectWalletButton extends BaseButton {
+export class ConnectWalletButton extends BaseButton<ConnectWalletButtonConfig> {
   wallet: Wallet | null = null;
   connectionSourceName?: WalletApp;
   unsubscribeFromConnector?: () => void;
   locale?: Locale;
   private button?: ImageButton;
   private onError?: HandleError;
-  private _config: ConnectWalletButtonConfig;
+  protected _config: ConnectWalletButtonConfig;
 
   constructor(scene: BaseScene, config: ConnectWalletButtonConfig) {
     super(scene, config, 'ConnectWalletButton');
@@ -155,10 +155,6 @@ export class ConnectWalletButton extends BaseButton {
 
   public getFullAddress() {
     return this.getData("fullAddress") as string;
-  }
-
-  get config(): ConnectWalletButtonConfig {
-    return this._config;
   }
 
   public destroy(fromScene?: boolean): void {

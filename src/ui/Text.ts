@@ -9,10 +9,10 @@ const defaultStyle = {
   color: '#fff', // 颜色
 };
 
-export class Text extends Container {
+export class Text extends Container<TextConfig> {
   private _width?: number;
   private _height?: number;
-  private _config: TextConfig;
+  protected _config: TextConfig;
 
   text: Phaser.GameObjects.Text;
 
@@ -24,7 +24,7 @@ export class Text extends Container {
     const text = config.text || "Welcome to MiracleAI";
     const style = this.getLabelStyle(config);
 
-    this.text = this.scene.make.text({ text, style });
+    this.text = this.scene.make.text({ text, style: style as TextStyle });
     this.add(this.text);
 
     this.reDraw(config);
@@ -77,15 +77,16 @@ export class Text extends Container {
     this._config.height = this._height;
   }
 
-  private getLabelStyle(config: LabelConfig) {
+  private getLabelStyle(config: TextConfig) : LabelConfig{
     const textStyle = config.textStyle ?? defaultStyle;
     const autoWidth = config.width ? false : true;
     this._width = autoWidth ? (this.scene.scale.width - 20) : (config.width ?? 150);
 
-    const style = {
+    const style: LabelConfig = {
       ...textStyle,
       wordWrap: {},
       padding: config.padding,
+      backgroundColor: undefined
     }
 
     let wordWrapWidth = this._width;
@@ -108,10 +109,6 @@ export class Text extends Container {
   set Text(text: string) {
     this._config = Utils.MergeRight(this._config, { text }) as TextConfig;
     this.reDraw(this._config);
-  }
-  
-  get config(): TextConfig {
-    return this._config!;
   }
 
   setWidth(width: number) {

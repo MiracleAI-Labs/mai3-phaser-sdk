@@ -4,8 +4,8 @@ import { BaseScene } from '../game';
 import { BaseButton } from './BaseButton';
 import { Text } from './Text';
 
-export class RoundedButton extends BaseButton {
-    private _config: RoundedButtonConfig;
+export class RoundedButton extends BaseButton<RoundedButtonConfig> {
+    protected _config: RoundedButtonConfig;
     protected bg?: Phaser.GameObjects.RenderTexture | null;
     protected image?: Phaser.GameObjects.Image;
     protected maskShape?: Phaser.GameObjects.Graphics;
@@ -40,6 +40,8 @@ export class RoundedButton extends BaseButton {
         const color = 0xffffff;
         this.reDrawMaskShap(radius, color);
         this.RefreshBounds();
+        this._config.width = this.RealWidth;
+        this._config.height = this.RealHeight;
     }
 
     reDrawBg(x: number, y: number, radius: number, borderWidth: number, borderColor: number, fillColor: number, backgroundAlpha: number) {
@@ -107,7 +109,4 @@ export class RoundedButton extends BaseButton {
         this.maskShape!.setPosition(bgLeftTopPos.x + btnRadius, bgLeftTopPos.y + btnRadius);
     }
 
-    get config(): RoundedButtonConfig {
-        return this._config!;
-    }
 }

@@ -3,7 +3,7 @@ import Utils from '../utils';
 import { BaseScene } from "../game";
 import { BaseButton } from './BaseButton';
 
-export class BaseBar extends BaseButton {
+export class BaseBar<T extends BaseBarConfig = BaseBarConfig> extends BaseButton<T> {
     protected borderWidth?: number;
     protected borderColor?: number;
     protected radius?: number;
@@ -11,12 +11,12 @@ export class BaseBar extends BaseButton {
     public bgHeight?: number;
     protected fillWidth?: number;
     protected _progressValue: number = 0;
-    protected _config?: BaseBarConfig;
+    protected _config?: T;
     
     bg?: BackgroundType;
     fill?: BackgroundType;
 
-    constructor(scene: BaseScene, config: BaseBarConfig) {
+    constructor(scene: BaseScene, config: T) {
         super(scene, config);
         this._config = config;
         this.Type = 'BaseBar';
@@ -24,7 +24,7 @@ export class BaseBar extends BaseButton {
         this.reDraw(config);
     }
 
-    reDraw(config: BaseBarConfig) {
+    reDraw(config: T) {
         this._config = config;
         this.bgWidth = config.width ?? 300;
         this.bgHeight = config.height ?? 32;
@@ -166,9 +166,6 @@ export class BaseBar extends BaseButton {
         return this.fillWidth;
     }
 
-    get config(): BaseBarConfig {
-        return this._config!;
-    }
 }
 
 

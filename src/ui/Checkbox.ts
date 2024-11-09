@@ -4,9 +4,9 @@ import { Image } from "./Image";
 import { Container } from "./Container";
 import { BaseButton } from "./BaseButton";
 
-export class Checkbox extends BaseButton {
+export class Checkbox extends BaseButton<CheckboxConfig> {
   private _value: string = "";
-  private _config: CheckboxConfig;
+  protected _config: CheckboxConfig;
   public isChecked: boolean = false;
   private label?: Phaser.GameObjects.Text;
   private checkboxButton?: Container;
@@ -120,10 +120,6 @@ export class Checkbox extends BaseButton {
 
   get value(): string {
     return this._value;
-  }
-
-  get config(): CheckboxConfig {
-    return this._config;
   }
 
   destroy(fromScene?: boolean): void {

@@ -1,6 +1,7 @@
 import { Container } from "../ui/Container";
 import { ProgressBar } from "../ui/ProgressBar";
 import { BaseScene } from "../game";
+import { BaseBarConfig, BaseConfig } from "../types";
 
 export default class ResizableComponentManager {
   private scene: BaseScene;
@@ -8,8 +9,6 @@ export default class ResizableComponentManager {
   private resizeContainers: Phaser.GameObjects.Container[] = [];
   private isResizing: boolean = false;
   private activeHandle: Phaser.GameObjects.Rectangle | null = null;
-  private originalWidth: number = 0;
-  private originalHeight: number = 0;
 
   public components: Container[] = [];
 
@@ -23,7 +22,7 @@ export default class ResizableComponentManager {
   }
 
   clear() {
-    this.resizeContainers.forEach(item => {
+    this.resizeContainers.forEach((item) => {
       item.destroy(true);
     });
 
@@ -37,29 +36,41 @@ export default class ResizableComponentManager {
     const padding = 5;
     const positions = this.getComponentBorderPositions(component, padding);
 
-    const resizeContainer = this.scene.add.container(component.x - padding, component.y - padding);
+    const pos = component.getWorldTransformMatrix();
+    const resizeContainer = this.scene.add.container(
+      pos.tx - padding,
+      pos.ty - padding
+    );
     this.scene.add.existing(resizeContainer);
     this.resizeContainers.push(resizeContainer);
 
     const borderGraphics = this.scene.add.graphics();
     borderGraphics.lineStyle(2, 0xffffff, 1);
-    borderGraphics.strokeRect(0, 0, component.RealWidth + padding * 2, component.RealHeight + padding * 2);
-    resizeContainer.setDepth(component.depth);
+    borderGraphics.strokeRect(
+      0,
+      0,
+      component.Width + padding * 2,
+      component.Height + padding * 2
+    );
+    resizeContainer.setDepth(Infinity);
     resizeContainer.add(borderGraphics);
 
     positions.forEach((pos, index) => {
+      const _pos = component.getWorldTransformMatrix();
       const handle = this.scene.add.rectangle(
-        pos.x - component.x + padding,
-        pos.y - component.y + padding,
+        pos.x - _pos.tx + padding,
+        pos.y - _pos.ty + padding,
         handleSize,
         handleSize,
         0xffffff
       );
       handle.setOrigin(0.5);
       handle.setInteractive({ draggable: true });
-      handle.on('dragstart', () => this.startResize(handle, componentIndex));
-      handle.on('drag', (pointer: Phaser.Input.Pointer) => this.resize(pointer, index, componentIndex));
-      handle.on('dragend', () => this.endResize());
+      handle.on("dragstart", () => this.startResize(handle, componentIndex));
+      handle.on("drag", (pointer: Phaser.Input.Pointer) =>
+        this.resize(pointer, index, componentIndex)
+      );
+      handle.on("dragend", () => this.endResize(componentIndex));
       this.resizeHandles.push(handle);
       resizeContainer.add(handle);
     });
@@ -70,10 +81,10 @@ export default class ResizableComponentManager {
   private getComponentBorderPositions(component: Container, padding: number) {
     const left = 0;
     const top = 0;
-    const right = component.RealWidth + padding * 2;
-    const bottom = component.RealHeight + padding * 2;
-    const centerX = component.RealWidth / 2;
-    const centerY = component.RealHeight / 2;
+    const right = component.Width + padding * 2;
+    const bottom = component.Height + padding * 2;
+    const centerX = component.Width / 2;
+    const centerY = component.Height / 2;
 
     return [
       { x: left, y: top },
@@ -83,27 +94,37 @@ export default class ResizableComponentManager {
       { x: right, y: centerY },
       { x: left, y: bottom },
       { x: centerX, y: bottom },
-      { x: right, y: bottom }
+      { x: right, y: bottom },
     ];
   }
 
-  private startResize(handle: Phaser.GameObjects.Rectangle, componentIndex: number) {
+  private startResize(
+    handle: Phaser.GameObjects.Rectangle,
+    componentIndex: number
+  ) {
     this.isResizing = true;
     this.activeHandle = handle;
-    this.originalWidth = this.components[componentIndex].RealWidth;
-    this.originalHeight = this.components[componentIndex].RealHeight;
+    const component = this.components[componentIndex];
+    this.scene.events.emit("resizeStart", (component as Container).config);
   }
 
-  private resize(pointer: Phaser.Input.Pointer, handleIndex: number, componentIndex: number) {
+  private resize(
+    pointer: Phaser.Input.Pointer,
+    handleIndex: number,
+    componentIndex: number
+  ) {
     if (!this.isResizing || !this.activeHandle) return;
 
     const component = this.components[componentIndex];
     const resizeContainer = this.resizeContainers[componentIndex];
-    const dx = pointer.x - resizeContainer.x - this.activeHandle.x;
-    const dy = pointer.y - resizeContainer.y - this.activeHandle.y;
+    const rePos = resizeContainer.getWorldTransformMatrix();
+    const dx = pointer.x - rePos.tx - this.activeHandle.x;
+    const dy = pointer.y - rePos.ty - this.activeHandle.y;
 
-    let newWidth = this.originalWidth;
-    let newHeight = this.originalHeight;
+    const originalWidth = component.Width;
+    const originalHeight = component.Height;
+    let newWidth = originalWidth;
+    let newHeight = originalHeight;
     let newX = component.x;
     let newY = component.y;
 
@@ -112,73 +133,78 @@ export default class ResizableComponentManager {
 
     switch (handleIndex) {
       case 0: // 左上
-        newWidth = Math.max(this.originalWidth - dx, minWidth);
-        newHeight = Math.max(this.originalHeight - dy, minHeight);
-        newX += this.originalWidth - newWidth;
-        newY += this.originalHeight - newHeight;
+        newWidth = Math.max(originalWidth - dx, minWidth);
+        newHeight = Math.max(originalHeight - dy, minHeight);
+        newX += originalWidth - newWidth;
+        newY += originalHeight - newHeight;
         break;
       case 1: // 上中
-        newHeight = Math.max(this.originalHeight - dy, minHeight);
-        newY += this.originalHeight - newHeight;
+        newHeight = Math.max(originalHeight - dy, minHeight);
+        newY += originalHeight - newHeight;
         break;
       case 2: // 右上
-        newWidth = Math.max(this.originalWidth + dx, minWidth);
-        newHeight = Math.max(this.originalHeight - dy, minHeight);
-        newY += this.originalHeight - newHeight;
+        newWidth = Math.max(originalWidth + dx, minWidth);
+        newHeight = Math.max(originalHeight - dy, minHeight);
+        newY += originalHeight - newHeight;
         break;
       case 3: // 左中
-        newWidth = Math.max(this.originalWidth - dx, minWidth);
-        newX += this.originalWidth - newWidth;
+        newWidth = Math.max(originalWidth - dx, minWidth);
+        newX += originalWidth - newWidth;
         break;
       case 4: // 右中
-        newWidth = Math.max(this.originalWidth + dx, minWidth);
+        newWidth = Math.max(originalWidth + dx, minWidth);
         break;
       case 5: // 左下
-        newWidth = Math.max(this.originalWidth - dx, minWidth);
-        newHeight = Math.max(this.originalHeight + dy, minHeight);
-        newX += this.originalWidth - newWidth;
+        newWidth = Math.max(originalWidth - dx, minWidth);
+        newHeight = Math.max(originalHeight + dy, minHeight);
+        newX += originalWidth - newWidth;
         break;
       case 6: // 下中
-        newHeight = Math.max(this.originalHeight + dy, minHeight);
+        newHeight = Math.max(originalHeight + dy, minHeight);
         break;
       case 7: // 右下
-        newWidth = Math.max(this.originalWidth + dx, minWidth);
-        newHeight = Math.max(this.originalHeight + dy, minHeight);
+        newWidth = Math.max(originalWidth + dx, minWidth);
+        newHeight = Math.max(originalHeight + dy, minHeight);
         break;
     }
 
-    const newConfig = {
-      ...(component as any).config,
+    const newConfig: BaseConfig = {
+      ...(component as Container).config,
       x: newX,
       y: newY,
       width: newWidth,
-      height: newHeight
+      height: newHeight,
     };
 
-    if (component.Type === 'RoundedButton') {
-      if (newWidth !== this.originalWidth) {
+    if (component.Type === "RoundedButton") {
+      if (newWidth !== originalWidth) {
         newConfig.radius = newWidth / 2;
       }
-      if (newHeight !== this.originalHeight) {
+      if (newHeight !== originalHeight) {
         newConfig.radius = newHeight / 2;
       }
     }
 
     this.scene.events.emit("resize", newConfig);
 
-    (component as any).reDraw(newConfig);
+    component.setPosition(newX, newY);
+    (component as Container).reDraw(newConfig);
     component.setEventInteractive();
 
-    if (component.Type === 'ProgressBar') {
-      (component as ProgressBar).updateProgress(newConfig.process);
+    if (component.Type === "ProgressBar") {
+      (component as ProgressBar).updateProgress(
+        (newConfig as BaseBarConfig).process ?? 0
+      );
     }
 
     this.updateResizeHandles(componentIndex);
   }
 
-  private endResize() {
+  private endResize(componentIndex: number) {
     this.isResizing = false;
     this.activeHandle = null;
+    const component = this.components[componentIndex];
+    this.scene.events.emit("resizeEnd", (component as Container).config);
   }
 
   public updateResizeHandles(componentIndex: number) {
@@ -186,13 +212,21 @@ export default class ResizableComponentManager {
     const resizeContainer = this.resizeContainers[componentIndex];
     const padding = 5;
 
-    resizeContainer.setPosition(component.x - padding, component.y - padding);
+    const pos = component.getWorldTransformMatrix();
+    component.RefreshBounds();
+    resizeContainer.setPosition(pos.tx - padding, pos.ty - padding);
 
     const positions = this.getComponentBorderPositions(component, padding);
-    const borderGraphics = resizeContainer.list[0] as Phaser.GameObjects.Graphics;
+    const borderGraphics = resizeContainer
+      .list[0] as Phaser.GameObjects.Graphics;
     borderGraphics.clear();
     borderGraphics.lineStyle(2, 0xffffff, 1);
-    borderGraphics.strokeRect(0, 0, component.RealWidth + padding * 2, component.RealHeight + padding * 2);
+    borderGraphics.strokeRect(
+      0,
+      0,
+      component.Width + padding * 2,
+      component.Height + padding * 2
+    );
 
     resizeContainer.list.slice(1).forEach((child, index) => {
       if (child instanceof Phaser.GameObjects.Rectangle) {

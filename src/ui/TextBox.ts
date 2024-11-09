@@ -3,8 +3,8 @@ import { TextBoxConfig } from '../types';
 import { Container } from './Container';
 import { BaseScene } from "../game";
 import { Label } from './Label';
-export class TextBox extends Container {
-    protected _config: TextBoxConfig;
+export class TextBox<T extends TextBoxConfig = TextBoxConfig> extends Container<T> {
+    protected _config?: T;
     
     label: Label;
     selection: Phaser.GameObjects.Rectangle;
@@ -22,7 +22,7 @@ export class TextBox extends Container {
     isSelecting: boolean = false;
     maxWidth: number;
 
-    constructor(scene: BaseScene, config: TextBoxConfig) {
+    constructor(scene: BaseScene, config: T) {
         super(scene, config, 'TextBox');
         this._config = config;
         this.isFocus = false;
@@ -301,10 +301,6 @@ export class TextBox extends Container {
         const transformMatrix = this.label.getWorldTransformMatrix();
         transformMatrix.transformPoint(this.label.x, this.label.y, worldPoint);
         return worldPoint;
-    }
-
-    get config(): TextBoxConfig {
-        return this._config!;
     }
     
     destroy(fromScene?: boolean): void {

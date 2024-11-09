@@ -4,7 +4,7 @@ import { BaseScene } from "../game";
 import Memory from "../utils/Memory";
 import { RoundedButton } from "./RoundedButton";
 import { BaseBar } from "./BaseBar";
-export class Slider extends BaseBar {
+export class Slider extends BaseBar<SliderConfig> {
   min?: number;
   max?: number;
   step?: number;
@@ -177,10 +177,6 @@ export class Slider extends BaseBar {
 
   get value(): number {
     return this._value;
-  }
-
-  get config(): SliderConfig {
-    return this._config!;
   }
 
   destroy(fromScene?: boolean): void {

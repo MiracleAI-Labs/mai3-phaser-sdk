@@ -1,8 +1,9 @@
-import Phaser from 'phaser';
-import { Mai3Plugin } from '../plugins/Mai3Plugin';
-import ResizableComponentManager from '../utils/ResizableComponentManager';
+import Phaser from "phaser";
+import { Mai3Plugin } from "../plugins/Mai3Plugin";
+import ResizableComponentManager from "../utils/ResizableComponentManager";
 import { Container } from "../ui/Container";
-
+import UIComponentFactory from "../utils/UIComponentFactory";
+import { BaseConfig } from "../types";
 class BaseScene extends Phaser.Scene {
   mai3!: Mai3Plugin;
   public resizableManager: ResizableComponentManager;
@@ -13,6 +14,8 @@ class BaseScene extends Phaser.Scene {
     super({ key });
     this.resizableManager = new ResizableComponentManager(this);
   }
+
+  create() {}
 
   preload() {
     if (this.isDebugPrint) {
@@ -69,6 +72,19 @@ class BaseScene extends Phaser.Scene {
 
   public clearDragResizeComponents() {
     this.resizableManager?.clear();
+  }
+
+  public setChildren(parent?: Container, childConfigs?: BaseConfig[]): void {
+    if (!parent || !childConfigs) return;
+    for (const config of childConfigs) {
+      const child = UIComponentFactory.createChildFromConfig(this, config);
+      parent.addChild(child);
+    }
+  }
+
+  public getChild(childConfig: BaseConfig): Container {
+    const child = UIComponentFactory.createChildFromConfig(this, childConfig);
+    return child;
   }
 }
 

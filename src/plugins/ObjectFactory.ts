@@ -11,14 +11,14 @@ import { Container } from "../ui/Container";
 import { RoundedButton } from "../ui/RoundedButton";
 import { TextButton } from "../ui/TextButton";
 import { ImageButton } from "../ui/ImageButton";
-import { BaseConfig, ButtonConfig, CheckboxConfig, CheckboxGroupConfig, DialogConfig, ImageButtonConfig, ImageConfig, LabelConfig, LinearLayoutConfig, RoundedButtonConfig, SliderConfig, TabsConfig, TextBoxConfig, TextConfig, ToastConfig, ListViewConfig, VolumeSliderConfig, PanelConfig, GridConfig, SpriteConfig, ConnectWalletButtonConfig, ProgressBarConfig } from '../types';
+import { BaseConfig, ButtonConfig, CheckboxConfig, CheckboxGroupConfig, DialogConfig, ImageButtonConfig, ImageConfig, LabelConfig, LinearLayoutConfig, RoundedButtonConfig, SliderConfig, TabsConfig, TextBoxConfig, TextConfig, ToastConfig, ScrollViewConfig, VolumeSliderConfig, PanelConfig, GridConfig, SpriteConfig, ConnectWalletButtonConfig, ProgressBarConfig, ListViewConfig } from '../types';
 import { BaseScene } from "../game";
 import { TextBox } from "../ui/TextBox";
 import { Tabs } from "../ui/Tabs";
 import { TextArea } from "../ui/TextArea";
 import { Toast } from "../ui/Toast";
 import { LinearLayout } from "../ui/LinearLayout";
-import { ListView } from "../ui/ListView";
+import { ScrollView } from "../ui/ScrollView";
 import { Panel } from "../ui/Panel";
 import { ProgressBar } from "../ui/ProgressBar";
 import { Grid } from "../ui/Grid";
@@ -26,6 +26,7 @@ import { Sprite } from "../ui/Sprite";
 import { DropdownMenu } from "../ui/DropdownMenu";
 import { ConnectWalletButton } from "../ui/ConnectWalletButton";
 import { DropdownMenuConfig } from "../ui/DropdownMenu";
+import { ListView } from "../ui";
 
 type Constructor<T extends Phaser.GameObjects.GameObject> = new (...args: any[]) => T;
 
@@ -49,7 +50,7 @@ class ObjectFactory {
     this.updateList = undefined;
   }
 
-  createGameObject<T extends Phaser.GameObjects.GameObject>(ctor: Constructor<T>, scene: Scene, config: any): T {
+  createGameObject<T extends Phaser.GameObjects.GameObject, C extends BaseConfig>(ctor: Constructor<T>, scene: Scene, config: C): T {
     const gameObject = new ctor(scene, config);
     if (this.addToScene)
       this.scene.add.existing(gameObject);
@@ -143,6 +144,10 @@ class ObjectFactory {
 
   listView(config: ListViewConfig): ListView {
     return this.createGameObject(ListView, this.scene, config);
+  }
+
+  scrollView(config: ScrollViewConfig): ScrollView {
+    return this.createGameObject(ScrollView, this.scene, config);
   }
 
   sprite(config: SpriteConfig): Sprite {

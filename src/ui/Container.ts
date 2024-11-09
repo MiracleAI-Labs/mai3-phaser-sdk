@@ -3,17 +3,19 @@ import { BaseConfig } from "../types";
 import Utils from "../utils";
 import { BaseScene } from "../game";
 import DragUtils from "../utils/DragUtils";
-
-export class Container extends Phaser.GameObjects.Container {
+import { BaseContainer } from "../types";
+export class Container<
+  T extends BaseConfig = BaseConfig
+> extends BaseContainer<T> {
   protected _id: string;
   protected _type?: string;
   protected _bounds?: Phaser.Geom.Rectangle;
   protected _hitArea?: Phaser.Geom.Rectangle | Phaser.Geom.Circle;
-  protected _baseConfig?: BaseConfig;
+  protected declare _config?: T;
   scene: BaseScene;
   protected _bg?: Phaser.GameObjects.Image | Phaser.GameObjects.RenderTexture;
 
-  constructor(scene: BaseScene, baseConfig?: BaseConfig, type?: string) {
+  constructor(scene: BaseScene, baseConfig?: T, type?: string) {
     super(scene, baseConfig?.x, baseConfig?.y);
 
     this._id = baseConfig?.id ?? "";
@@ -24,22 +26,32 @@ export class Container extends Phaser.GameObjects.Container {
     this.initializeEvents();
   }
 
+  reDraw(config?: T): void {
+    this.clear();
+    this.updateConfig(config);
+    this.initializeEvents();
+    this.drawBackground(config);
+  }
+  clear(): void {
+    this._bg?.destroy(true);
+  }
+
   protected initializeEvents(): void {
-    if (this._baseConfig?.draggable) {
+    if (this._config?.draggable) {
       this.enableDrag();
       return;
     }
   }
 
-  public updateConfig(config?: BaseConfig): void {
-    this._baseConfig = config;
-    this.setChildrenAsync(config?.childConfigs);
+  public updateConfig(config?: T): void {
+    this._config = config;
+    this.setChildren(config?.childConfigs);
   }
 
   public setEventInteractive(): void {
     const hitArea = DragUtils.setEventInteractive(
       this,
-      this._baseConfig,
+      this._config,
       this._hitArea
     );
     if (!this._hitArea) this._hitArea = hitArea;
@@ -50,14 +62,40 @@ export class Container extends Phaser.GameObjects.Container {
     gameObject?: Phaser.GameObjects.GameObject
   ): Phaser.GameObjects.GameObject | undefined {
     const container = (gameObject ?? this) as Container;
-    return container.getAll().find((item) => (item as Container).id === id);
+    let all = container.getAll();
+    let find = all.find((item) => (item as Container).id === id);
+    if (find) return find;
+    for (let i = 0; i < all.length; i++) {
+      try {
+        find = (all[i] as Container)?.findChild(id, all[i]);
+      } catch (err) {
+        //
+      }
+      if (find) return find;
+    }
+    return undefined;
   }
 
   public enableDrag(): void {
-    this.setEventInteractive();
-    this.scene.input.setDraggable(this);
-    this.on("drag", this.onDrag);
-    this.on("dragend", this.onDragEnd);
+    try {
+      this.disableDrag();
+      this.setEventInteractive();
+      this.scene?.input?.setDraggable(this);
+      this.on("drag", this.onDrag);
+      this.on("dragend", this.onDragEnd);
+    } catch (error) {
+      //
+    }
+  }
+
+  public disableDrag(): void {
+    try {
+      this.scene.input.setDraggable(this, false);
+      this.off("drag", this.onDrag);
+      this.off("dragend", this.onDragEnd);
+    } catch (error) {
+      //
+    }
   }
 
   public onDrag(
@@ -80,8 +118,8 @@ export class Container extends Phaser.GameObjects.Container {
 
   private getClampedPosition(dragX: number, dragY: number): [number, number] {
     if (this.Type === "RoundedButton") {
-      const radius = this._baseConfig?.radius ?? 0;
-      const borderWidth = this._baseConfig?.borderWidth ?? 0;
+      const radius = this._config?.radius ?? 0;
+      const borderWidth = this._config?.borderWidth ?? 0;
       const radiusBorderWidth = (radius + borderWidth) * 2;
       return [
         Utils.clampX(dragX, this.scene.scale.width, radiusBorderWidth),
@@ -128,17 +166,11 @@ export class Container extends Phaser.GameObjects.Container {
   }
 
   get Width(): number {
-    return (
-      (this._baseConfig?.width ?? 0) +
-      (this._baseConfig?.borderWidth ? this._baseConfig?.borderWidth * 2 : 0)
-    );
+    return this.config?.width ?? 0;
   }
 
   get Height(): number {
-    return (
-      (this._baseConfig?.height ?? 0) +
-      (this._baseConfig?.borderWidth ? this._baseConfig?.borderWidth * 2 : 0)
-    );
+    return this.config?.height ?? 0;
   }
 
   get RealWidth(): number {
@@ -204,19 +236,19 @@ export class Container extends Phaser.GameObjects.Container {
   }
 
   get padding() {
-    if (this._baseConfig?.padding?.all) {
+    if (this._config?.padding?.all) {
       return {
-        left: this._baseConfig!.padding.all,
-        right: this._baseConfig!.padding.all,
-        top: this._baseConfig!.padding.all,
-        bottom: this._baseConfig!.padding.all,
+        left: this._config!.padding.all,
+        right: this._config!.padding.all,
+        top: this._config!.padding.all,
+        bottom: this._config!.padding.all,
       };
     } else {
       return {
-        left: this._baseConfig?.padding?.left ?? 0,
-        right: this._baseConfig?.padding?.right ?? 0,
-        top: this._baseConfig?.padding?.top ?? 0,
-        bottom: this._baseConfig?.padding?.bottom ?? 0,
+        left: this._config?.padding?.left ?? 0,
+        right: this._config?.padding?.right ?? 0,
+        top: this._config?.padding?.top ?? 0,
+        bottom: this._config?.padding?.bottom ?? 0,
       };
     }
   }
@@ -237,24 +269,11 @@ export class Container extends Phaser.GameObjects.Container {
     }
   }
 
-  /**
-   * Asynchronously sets multiple children to this container based on configuration objects
-   * @param childConfigs Optional array of child configuration objects
-   */
-  public async setChildrenAsync(childConfigs?: BaseConfig[]): Promise<any> {
-    if (!childConfigs) {
-      return;
-    }
-    const UIComponentFactory = await import("../utils/UIComponentFactory");
-    for (const config of childConfigs) {
-      const child = UIComponentFactory.default.createChildFromConfig(
-        this.scene,
-        config
-      );
-      child.setSize(config.width ?? 0, config.height ?? 0);
-      this.addChild(child);
-    }
-    this._baseConfig?.handleSetChildrenAsyncEnd?.(this.getAll() ?? []);
+  public setChildren(childConfigs?: BaseConfig[]): void {
+    if (!childConfigs) return;
+    this._config!.childConfigs = childConfigs;
+    this.removeAll(true);
+    this.scene.setChildren(this, childConfigs);
   }
 
   public drawBackground(config?: BaseConfig): void {
@@ -270,18 +289,19 @@ export class Container extends Phaser.GameObjects.Container {
       borderColor = 0xff8221,
       backgroundColor,
       backgroundAlpha,
-    } = config ?? this._baseConfig!;
+    } = config ?? this._config!;
+    if (!backgroundColor) return;
     this._bg = Utils.reDrawRoundedRectRenderTexture(
       this.scene,
       this._bg! as Phaser.GameObjects.RenderTexture,
       0,
       0,
-      (width ?? 0) + borderWidth * 2,
-      (height ?? 0) + borderWidth * 2,
+      width,
+      height,
       borderWidth,
       radius,
-      borderColor,
-      backgroundColor,
+      borderColor as number,
+      backgroundColor as number,
       backgroundAlpha
     );
     this.addChildAt(this._bg!, 0);
@@ -290,7 +310,7 @@ export class Container extends Phaser.GameObjects.Container {
   drawBorderLine?: Phaser.GameObjects.Rectangle | Phaser.GameObjects.Arc;
 
   public debugDrawBorderLine(color?: number): void {
-    const borderWidth = this._baseConfig?.borderWidth ?? 0;
+    const borderWidth = this._config?.borderWidth ?? 0;
     const width = this.getBounds().width + borderWidth * 2;
     const height = this.getBounds().height + borderWidth * 2;
 
@@ -307,7 +327,7 @@ export class Container extends Phaser.GameObjects.Container {
     height: number,
     color?: number
   ): Phaser.GameObjects.Rectangle | Phaser.GameObjects.Arc {
-    if (this._baseConfig?.geomType === "Circle") {
+    if (this._config?.geomType === "Circle") {
       return this.scene.add
         .circle(0, 0, width / 2, 0x000000, 0.1)
         .setStrokeStyle(4, color ?? 0xa52a2a, 1)
@@ -331,5 +351,6 @@ export class Container extends Phaser.GameObjects.Container {
   destroy(fromScene?: boolean): void {
     super.destroy(fromScene);
     this._bg?.destroy(fromScene);
+    this._bg = undefined;
   }
 }
