@@ -72,7 +72,7 @@ yarn add @mai3/phaser-sdk
 ```
 
 ## Configuration
-If you're using vite, you'll need to run `npm install @esbuild-plugins/node-globals-polyfill --save-dev` or `yarn add --dev @esbuild-plugins/node-globals-polyfill` and add the following to your config.*.mjs to enable `buffer` support:
+If you're using vite, you'll need to run `npm install @esbuild-plugins/node-globals-polyfill --save-dev` or `yarn add --dev @esbuild-plugins/node-globals-polyfill` and add the following to your vite.config.ts to enable `buffer` support:
 ```typescript
 import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
 
