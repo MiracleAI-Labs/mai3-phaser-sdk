@@ -236,6 +236,12 @@ export class Sprite extends BaseButton<SpriteConfig> {
     }
   }
 
+  public setImmovable(immovable: boolean = true): void {
+    if (this.instance?.body) {
+      this.instance.body.enable = !immovable;
+    }
+  }
+
   public setBounce() {
     if (this._config.enableMove) {
       this.instance?.setBounce(this._config.bounce ?? 0);
