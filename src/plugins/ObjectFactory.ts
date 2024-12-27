@@ -11,7 +11,7 @@ import { Container } from "../ui/Container";
 import { RoundedButton } from "../ui/RoundedButton";
 import { TextButton } from "../ui/TextButton";
 import { ImageButton } from "../ui/ImageButton";
-import { BaseConfig, ButtonConfig, CheckboxConfig, CheckboxGroupConfig, DialogConfig, ImageButtonConfig, ImageConfig, LabelConfig, LinearLayoutConfig, RoundedButtonConfig, SliderConfig, TabsConfig, TextBoxConfig, TextConfig, ToastConfig, ScrollViewConfig, VolumeSliderConfig, PanelConfig, GridConfig, SpriteConfig, ConnectWalletButtonConfig, ProgressBarConfig, ListViewConfig } from '../types';
+import { BaseConfig, ButtonConfig, CheckboxConfig, CheckboxGroupConfig, DialogConfig, ImageButtonConfig, ImageConfig, LabelConfig, LinearLayoutConfig, RoundedButtonConfig, SliderConfig, TabsConfig, TextBoxConfig, TextConfig, ToastConfig, ScrollViewConfig, VolumeSliderConfig, PanelConfig, GridConfig, SpriteConfig, ConnectWalletButtonConfig, ProgressBarConfig, ListViewConfig, JoystickConfig } from '../types';
 import { BaseScene } from "../game";
 import { TextBox } from "../ui/TextBox";
 import { Tabs } from "../ui/Tabs";
@@ -27,6 +27,7 @@ import { DropdownMenu } from "../ui/DropdownMenu";
 import { ConnectWalletButton } from "../ui/ConnectWalletButton";
 import { DropdownMenuConfig } from "../ui/DropdownMenu";
 import { ListView } from "../ui";
+import { Joystick } from "../ui/Joystick";
 
 type Constructor<T extends Phaser.GameObjects.GameObject> = new (...args: any[]) => T;
 
@@ -160,6 +161,9 @@ class ObjectFactory {
 
   dropdownMenu(config: DropdownMenuConfig): DropdownMenu {
     return this.createGameObject(DropdownMenu, this.scene, config);
+  }
+  Joystick(config: JoystickConfig): Joystick {
+    return this.createGameObject(Joystick, this.scene, config);
   }
 };
 export default ObjectFactory;

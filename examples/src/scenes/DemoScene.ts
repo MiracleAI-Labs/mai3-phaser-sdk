@@ -53,10 +53,11 @@ export class DemoScene extends BaseScene {
             { name: 'TON Demo', scene: 'TonDemo', color: 0x009688 },
             { name: 'ScrollView Demo', scene: 'ScrollViewDemo', color: 0x009688 },
             { name: 'ListView Demo', scene: 'ListViewDemo', color: 0x009688 },
+            { name: 'Joystick Demo ', scene: 'JoystickDemo', color: 0x9C277B },
         ];
 
         const rowButtons = [];
-        for (let i = 0; i < demoScenes.length; i++) {      
+        for (let i = 0; i < demoScenes.length; i++) {
             const demo = demoScenes[i];
             rowButtons.push({
                 type: 'TextButton',
@@ -80,6 +81,6 @@ export class DemoScene extends BaseScene {
         }
         this.grid.addItems(rowButtons);
     }
-    
+
     update() { }
 }

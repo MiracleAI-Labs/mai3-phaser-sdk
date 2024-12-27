@@ -34,3 +34,4 @@ export * from "./components/TextButtonConfig";
 export * from "./components/TextConfig";
 export * from "./components/ToastConfig";
 export * from "./components/VolumeSliderConfig";
+export * from "./components/JoystickConfig";

@@ -42,6 +42,7 @@
     "@ton/ton": "^15.1.0",
     "@tonconnect/ui": "^2.0.9",
     "buffer": "^6.0.3",
-    "phaser": "^3.86.0"
+    "phaser": "^3.86.0",
+    "phaser3-rex-plugins": "^1.80.12"
   }
 }
