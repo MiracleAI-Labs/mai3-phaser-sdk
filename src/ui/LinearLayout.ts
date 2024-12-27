@@ -27,6 +27,7 @@ export class LinearLayout extends Container<LinearLayoutConfig> {
             this.addChildren(this._config.children);
         }
         this.updateBounds();
+        this.setDepth(this._config?.depth ?? 1);
     }
 
     private createBackground(): Phaser.GameObjects.Image | Phaser.GameObjects.RenderTexture {

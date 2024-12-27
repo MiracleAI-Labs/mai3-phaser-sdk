@@ -78,6 +78,7 @@ export class Toast extends Container<ToastConfig> {
     this.label.setPosition(0, 0);
     this.addChildAt(this.label, 0);
     this.setPosition(this._config.x, this._config.y);
+    this.setDepth(this._config?.depth ?? 1);
   }
 
   private getStyleByType(type: string) {

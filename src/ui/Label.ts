@@ -35,6 +35,7 @@ export class Label extends Panel<LabelConfig> {
     this.reDrawBackground(this._config);
     this.RefreshBounds();
     this.updateConfig(this._config);
+    this.setDepth(this._config?.depth ?? 1);
   }
 
   private validateConfig(): void {
@@ -47,7 +48,7 @@ export class Label extends Panel<LabelConfig> {
   }
 
   public drawText(): void {
-    const { text = "Welcome to MiracleAI", textAlign = 'left' } = this._config;
+    const { text = "", textAlign = 'left' } = this._config;
     const style = this.getLabelStyle();
     const padding = Utils.getPadding(this._config.padding);
 

@@ -6,6 +6,7 @@ export interface ConnectWalletButtonConfig extends NinePatchConfig {
   language?: Locales;
   walletApp?: WalletApp;
   manifestUrl?: string;
+  tonProof?: string;
   appUrl?: `${string}://${string}` | undefined;
   onWalletChange?: (wallet: Wallet | null) => void;
   onError?: HandleError;

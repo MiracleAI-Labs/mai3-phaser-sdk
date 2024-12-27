@@ -67,6 +67,7 @@ export class Slider extends BaseBar<SliderConfig> {
     );
 
     this.RefreshBounds();
+    this.setDepth(this._config?.depth ?? 1);
   }
 
   fixSliderBtnPosY() {

@@ -66,6 +66,7 @@ export class ScrollView<
     this.updateScrollBarPosition();
     this.updateVisibleItems();
     this.setChildren(this._config?.childConfigs);
+    this.setDepth(this._config?.depth ?? 1);
   }
 
   private setupContent(): void {

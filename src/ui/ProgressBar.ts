@@ -18,6 +18,7 @@ export class ProgressBar extends Container<ProgressBarConfig> {
   private initializeProgressBar(): void {
     this.createBar();
     this.createFill();
+    this.setDepth(this._config?.depth ?? 1);
     this.value = this._config.value ?? 0;
   }
 

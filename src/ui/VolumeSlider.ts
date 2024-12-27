@@ -29,6 +29,7 @@ export class VolumeSlider extends Container {
 
     this.sliderLabel.setPosition(0, 0);
     this.slider.y = this.sliderLabel.displayHeight + this.slider.btnRadius / 2;
+    this.setDepth(config.depth ?? 1);
   }
 
   public reDraw(config: VolumeSliderConfig) {

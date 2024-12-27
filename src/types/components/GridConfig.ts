@@ -15,7 +15,7 @@ export interface GridConfig extends PanelConfig {
   auxiliaryLineWidth?: number;
   auxiliaryLineColor?: number;
   radius?: number;
-  borderColor?: number;
+  borderColor?: number | string;
   showGrid?: boolean;
   alignment?: Alignment;
   children?: GridItem[];

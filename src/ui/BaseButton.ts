@@ -6,6 +6,7 @@ import Utils from "../utils";
 
 export class BaseButton<T extends BaseButtonConfig = BaseButtonConfig> extends Container<T> {
   protected _baseConfig?: T;
+  private lastAlpha?: number;
   constructor(scene: BaseScene, baseConfig?: T, type?: string) {
     super(scene, baseConfig, type);
     this._baseConfig = baseConfig;
@@ -36,7 +37,7 @@ export class BaseButton<T extends BaseButtonConfig = BaseButtonConfig> extends C
 
   protected handleOut(): void {
     this.handleEvent(this._baseConfig?.handleOut);
-    this.alpha = 1;
+    this.lastAlpha && (this.alpha = this.lastAlpha) && (this.lastAlpha = undefined);
 
     if (this._baseConfig?.enableSmoothScaleAnim) {
       Utils.smoothScale(this.scene.tweens, this, 1, 125);
@@ -45,6 +46,7 @@ export class BaseButton<T extends BaseButtonConfig = BaseButtonConfig> extends C
 
   protected handleDown(): void {
     this.handleEvent(this._baseConfig?.handleDown);
+    this.lastAlpha = this.alpha;
     this.alpha = 0.5;
 
     if (this._baseConfig?.enableSmoothScaleAnim) {
@@ -54,7 +56,7 @@ export class BaseButton<T extends BaseButtonConfig = BaseButtonConfig> extends C
 
   protected handleUp(): void {
     this.handleEvent(this._baseConfig?.handleUp);
-    this.alpha = 1;
+    this.lastAlpha && (this.alpha = this.lastAlpha) && (this.lastAlpha = undefined);
 
     if (this._baseConfig?.enableSmoothScaleAnim) {
       Utils.smoothScale(this.scene.tweens, this, 1, 125);

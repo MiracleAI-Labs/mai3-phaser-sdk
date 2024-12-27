@@ -95,6 +95,7 @@ export class DropdownMenuItem extends Panel {
     }
 
     this.add([button, icon, text]);
+    this.setDepth(config.depth ?? 1);
   }
 }
 

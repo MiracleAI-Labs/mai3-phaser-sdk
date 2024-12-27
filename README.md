@@ -71,6 +71,30 @@ npm install @mai3/phaser-sdk
 yarn add @mai3/phaser-sdk
 ```
 
+## Configuration
+If you're using vite, you'll need to run `npm install @esbuild-plugins/node-globals-polyfill --save-dev` or `yarn add --dev @esbuild-plugins/node-globals-polyfill` and add the following to your vite.config.ts to enable `buffer` support:
+```typescript
+import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
+
+[...]
+export default defineConfig({
+  [...]
+    optimizeDeps: {
+        esbuildOptions: {
+            define: {
+                global: "globalThis",
+            },
+            plugins: [
+                NodeGlobalsPolyfillPlugin({
+                    buffer: true,
+                }),
+            ],
+        },
+    },
+  [...]
+});
+```
+
 ## Usage Example
 
 Here’s a quick example of how to create different types of buttons using the **mai3-phaser-sdk** library:

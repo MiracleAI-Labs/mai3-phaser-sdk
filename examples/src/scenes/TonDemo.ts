@@ -64,6 +64,7 @@ export class TonDemo extends BaseScene {
       y: 300,
       width: 200,
       height: 70,
+      tonProof: "Hello, this is a message to be signed!",
       texture: "imgBtn",
       language: "en",
       walletApp: "telegram-wallet",
@@ -74,6 +75,7 @@ export class TonDemo extends BaseScene {
         console.log("fullAddress: ", btn.getFullAddress());
         if (wallet) {
           this.label!.Text = `wallet: ${btn.getShortAddress() ?? ''}`;
+          console.log("tonProof: ", btn.getWalletTonProof(wallet));
         }
       },
       handleUp: {

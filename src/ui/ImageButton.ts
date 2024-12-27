@@ -46,6 +46,7 @@ export class ImageButton extends BaseButton<ImageButtonConfig> {
 
     this.RefreshBounds();
     this.updateConfig(config);
+    this.setDepth(config?.depth ?? 1);
   }
 
   destroy(fromScene?: boolean) {

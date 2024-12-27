@@ -54,7 +54,7 @@ export class Dialog extends Container<DialogConfig> {
         const rootX = (this.scene.scale.width - width) / 2;
         const rootY = (this.scene.scale.height - height) / 2;
         this.setPosition(rootX, rootY);
-        this.setDepth(99999);
+        this.setDepth(this._config?.depth ?? 99999);
         this.RefreshBounds();
     }
 

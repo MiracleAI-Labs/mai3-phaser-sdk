@@ -42,6 +42,10 @@ export class Checkbox extends BaseButton<CheckboxConfig> {
     this.reDrawCheckboxButton();
     this.reDrawLabel();
     this.RefreshBounds();
+    this._config.width = this.RealWidth;
+    this._config.height = this.RealHeight;
+    this.updateConfig(this._config);
+    this.setDepth(this._config?.depth ?? 1);
   }
 
   private reDrawLabel(): void {

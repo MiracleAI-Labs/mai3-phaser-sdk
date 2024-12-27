@@ -55,4 +55,19 @@ export class TonConnector {
     const tonConnect = await this.getInstance();
     return tonConnect.account?.address;
   }
+
+  public static async refreshPayload(tonProof?: string) {
+    TonConnector.connector.setConnectRequestParameters({
+      state: "loading",
+    });
+    const value = { tonProof };
+    if (!value) {
+      TonConnector.connector.setConnectRequestParameters(null);
+    } else {
+      TonConnector.connector.setConnectRequestParameters({
+        state: "ready",
+        value,
+      });
+    }
+  }
 }

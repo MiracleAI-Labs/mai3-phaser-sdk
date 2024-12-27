@@ -53,6 +53,11 @@ export class ListView extends ScrollView<ListViewConfig> {
     this.updateItems();
   }
 
+  public reDraw(config: ListViewConfig): void {
+    super.reDraw(config);
+    this.updateItems();
+  }
+
   public updateItems(): void {
     if (!this._config || !this._content) return;
     let all = this._content?.getAll();
@@ -79,5 +84,7 @@ export class ListView extends ScrollView<ListViewConfig> {
         }
       }
     }
+
+    this.setDepth(this._config?.depth ?? 1);
   }
 }

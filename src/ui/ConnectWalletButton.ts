@@ -7,6 +7,7 @@ import { BaseScene, WalletConnectorParams } from "../game";
 import { BaseButton } from './BaseButton';
 import { ImageButton } from './ImageButton';
 import { TonConnector } from '../game/TonConnetor';
+import { TonProofItemReplySuccess } from '@tonconnect/ui';
 
 export class ConnectWalletButton extends BaseButton<ConnectWalletButtonConfig> {
   wallet: Wallet | null = null;
@@ -34,6 +35,7 @@ export class ConnectWalletButton extends BaseButton<ConnectWalletButtonConfig> {
     this.RefreshBounds();
     this.initializeEvents();
     this.updateConfig(this._config);
+    this.setDepth(this._config.depth ?? 1);
   }
 
   private initWallet() {
@@ -129,6 +131,7 @@ export class ConnectWalletButton extends BaseButton<ConnectWalletButtonConfig> {
       if (TonConnector.connector?.connected) {
         await this.disconnectWallet();
       }
+      TonConnector.refreshPayload(this._config?.tonProof);
       await TonConnector.connector?.openModal();
     } catch (error: any) {
       console.log("connectWallet error", error);
@@ -155,6 +158,25 @@ export class ConnectWalletButton extends BaseButton<ConnectWalletButtonConfig> {
 
   public getFullAddress() {
     return this.getData("fullAddress") as string;
+  }
+
+  public getWalletTonProof(wallet: Wallet): any {
+    if (
+      wallet?.connectItems?.tonProof &&
+      "proof" in wallet?.connectItems?.tonProof
+    ) {
+      return {
+        address: wallet?.account.address,
+        network: wallet?.account.chain,
+        public_key: wallet?.account.publicKey,
+        proof: {
+          ...((wallet?.connectItems?.tonProof as TonProofItemReplySuccess)
+            ?.proof ?? {}),
+          state_init: wallet?.account.walletStateInit ?? "",
+        },
+      };
+    }
+    return null;
   }
 
   public destroy(fromScene?: boolean): void {

@@ -16,6 +16,7 @@ import {
   ScrollView,
   Grid,
   ListView,
+  ConnectWalletButton,
 } from "../ui/index";
 import { BaseScene } from "../game";
 import { BaseConfig } from "../types";
@@ -39,6 +40,7 @@ class UIComponentFactory {
     ScrollView,
     Grid,
     ListView,
+    ConnectWalletButton,
   };
 
   public static createChildFromConfig(

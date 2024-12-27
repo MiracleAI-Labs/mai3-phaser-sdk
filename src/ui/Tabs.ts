@@ -20,6 +20,7 @@ export class Tabs extends Container<TabsConfig> {
         this.createBg()
         this.createTabItems();
         this.setPosition(0, scene.scale.height - (this._config.height || 0));
+        this.setDepth(this._config?.depth ?? 1);
     }
 
     createBg() {

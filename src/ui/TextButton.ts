@@ -49,6 +49,7 @@ export class TextButton
     this.addChildAt(this.label, 1);
 
     this.drawIcon(config);
+    this.setDepth(config.depth ?? 1);
 
     this.updateConfig(config);
     this.RefreshBounds();
