@@ -27,7 +27,7 @@
   "description": "A UI component library based on the Phaser game engine",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/miracleAI-Lab/mai3-phaser-sdk.git"
+    "url": "git+https://github.com/MiracleAI-Labs/mai3-phaser-sdk.git"
   },
   "devDependencies": {
     "@types/node": "^22.7.4",

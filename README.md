@@ -273,7 +273,7 @@ You can explore various **mai3-phaser-sdk** components by following these steps:
 
 ```bash
 # Clone the repository
-git clone https://github.com/miracleAI-Lab/mai3-phaser-sdk
+git clone https://github.com/MiracleAI-Labs/mai3-phaser-sdk
 
 cd mai3-phaser-sdk
 
@@ -292,8 +292,8 @@ yarn start
 
 ## Contribution
 
-We welcome contributions! If you’d like to help improve **mai3-phaser-sdk**, feel free to submit issues or pull requests on our [GitHub repository](https://github.com/miracleAI-Lab/mai3-phaser-sdk).
+We welcome contributions! If you’d like to help improve **mai3-phaser-sdk**, feel free to submit issues or pull requests on our [GitHub repository](https://github.com/MiracleAI-Labs/mai3-phaser-sdk).
 
 ## License
 
-This project is licensed under the MIT License. For details, check the [LICENSE](https://github.com/miracleAI-Lab/mai3-phaser-sdk/blob/main/LICENSE) file.
+This project is licensed under the MIT License. For details, check the [LICENSE](https://github.com/MiracleAI-Labs/mai3-phaser-sdk/blob/main/LICENSE) file.
