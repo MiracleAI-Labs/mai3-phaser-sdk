@@ -1,10 +1,12 @@
 import { BaseScene } from "../game";
 import { ImageButtonConfig } from '../types';
 import { BaseButton } from "./BaseButton";
+import { Text } from ".";
 
 export class ImageButton extends BaseButton<ImageButtonConfig> {
   protected _config: ImageButtonConfig;
   public image?: Phaser.GameObjects.NineSlice;
+  protected text?: Text;
 
   constructor(scene: BaseScene, config: ImageButtonConfig) {
     config.width = config.width ?? 200;
@@ -45,8 +47,42 @@ export class ImageButton extends BaseButton<ImageButtonConfig> {
     this.addChild(this.image!);
 
     this.RefreshBounds();
+    this.reDrawText(config);
     this.updateConfig(config);
     this.setDepth(config?.depth ?? 1);
+  }
+
+  public reDrawText(config: ImageButtonConfig) {
+    if (this.text) {
+      this.text.destroy();
+      this.text = undefined;
+    }
+
+    if (config.text === undefined || config.text === "" || config.text === null) {
+      return;
+    }
+
+    this._config = config;
+    const imageBounds = this.image?.getBounds();
+    let isCenter: boolean = false;
+    if (this._config.textX === undefined && this._config.textY === undefined) {
+      isCenter = true;
+    }
+
+    const textConfig = {
+      x: isCenter ? imageBounds!.width / 2 : this._config.textX ?? 0,
+      y: isCenter ? imageBounds!.height / 2 : this._config.textY ?? 0,
+      text: this._config.text ?? "",
+      textStyle: this._config.textStyle ?? {},
+    };
+    this.text = new Text(this.scene, textConfig);
+
+    if (isCenter) {
+      this.text!.text!.setOrigin(0.5, 0.5);
+    }
+
+    this.add(this.text);
+    this.RefreshBounds();
   }
 
   destroy(fromScene?: boolean) {
