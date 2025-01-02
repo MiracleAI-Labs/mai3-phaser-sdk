@@ -152,6 +152,15 @@ export class Sprite extends BaseButton<SpriteConfig> {
       child.body.reset(x, y);
       child.setDisplaySize(this._config.width, this._config.height);
 
+      // Copy animation from instance if it exists
+      if (this.instance?.anims.currentAnim) {
+        const currentAnim = this.instance.anims.currentAnim;
+        child.play(currentAnim.key, {
+          frameRate: currentAnim.frameRate,
+          repeat: currentAnim.repeat
+        });
+      }
+
       // Add update check to recycle when out of bounds
       this.scene.events.on('update', () => {
         if (child.active) {
@@ -163,6 +172,7 @@ export class Sprite extends BaseButton<SpriteConfig> {
               child.y < bounds.y) {
               child.setActive(false);
               child.setVisible(false);
+              child.destroy();
             }
           }
         }
@@ -205,7 +215,7 @@ export class Sprite extends BaseButton<SpriteConfig> {
       if (velocity) this._config.upVelocity = velocity;
       this.instance?.setVelocityY(-(this._config.upVelocity ?? 0));
       this.directionY = 'up';
-      this.directionX = 'none';
+      // this.directionX = 'none';
       this.updatePosition();
     }
   }
@@ -215,7 +225,7 @@ export class Sprite extends BaseButton<SpriteConfig> {
       if (velocity) this._config.downVelocity = velocity;
       this.instance?.setVelocityY(this._config.downVelocity ?? 0);
       this.directionY = 'down';
-      this.directionX = 'none';
+      // this.directionX = 'none';
       this.updatePosition();
     }
   }
