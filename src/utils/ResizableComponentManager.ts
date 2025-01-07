@@ -219,16 +219,16 @@ export default class ResizableComponentManager {
     const positions = this.getComponentBorderPositions(component, padding);
     const borderGraphics = resizeContainer
       .list[0] as Phaser.GameObjects.Graphics;
-    borderGraphics.clear();
-    borderGraphics.lineStyle(2, 0xffffff, 1);
-    borderGraphics.strokeRect(
+    borderGraphics?.clear();
+    borderGraphics?.lineStyle(2, 0xffffff, 1);
+    borderGraphics?.strokeRect(
       0,
       0,
       component.Width + padding * 2,
       component.Height + padding * 2
     );
 
-    resizeContainer.list.slice(1).forEach((child, index) => {
+    resizeContainer?.list.slice(1).forEach((child, index) => {
       if (child instanceof Phaser.GameObjects.Rectangle) {
         child.setPosition(positions[index].x, positions[index].y);
       }

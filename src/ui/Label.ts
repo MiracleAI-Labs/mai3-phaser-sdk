@@ -77,7 +77,7 @@ export class Label extends Panel<LabelConfig> {
 
     this._config.width = this._width;
     this._config.height = this._height;
-    
+
     // console.log(`this.label?.displayWidth: ${this.label?.displayWidth}, width: ${this._width}`);
   }
 

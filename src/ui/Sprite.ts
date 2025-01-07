@@ -47,6 +47,13 @@ export class Sprite extends BaseButton<SpriteConfig> {
     this.instance?.setCollideWorldBounds(true);
     this.instance?.setDisplaySize(this._config.width, this._config.height);
     this.instance?.setOrigin(0);
+    if (this._config.flipX) {
+      this.instance?.setScale(
+        -Math.abs(this.instance.scaleX),
+        this.instance.scaleY
+      );
+      this.instance?.setPosition(this._config.width, 0);
+    }
     this.addChild(this.instance!);
 
     this.RefreshBounds();
@@ -56,35 +63,27 @@ export class Sprite extends BaseButton<SpriteConfig> {
       this.reDrawGroup();
     }
 
-    this.handleUpdateListener();
-
+    this.instance.on("animationstart", () => {
+      this.resetBody();
+    });
+    this.instance.on("animationcomplete", () => {
+      this.resetBody();
+    });
+    this.resetBody();
   }
 
-  private handleUpdateListener() {
-    // Remove old listener
-    this.removeUpdateListener();
-
-    // Monitor sprite velocity changes
-    if (this._config.gravity && this._config.gravity > 0) {
-      this._updateListener = () => {
-        if (this.instance?.body) {
-          // When vertical velocity is close to 0 and sprite is on the ground, it means falling has stopped
-          if (Math.abs(this.instance.body.velocity.y) <= 0 && this.instance.body.blocked.down) {
-            this.updatePosition();
-            this.removeUpdateListener();
-          }
-        }
-      };
-      this.scene.events.on('update', this._updateListener);
+  resetBody() {
+    if (this.instance && (this._config?.height ?? 0) < (this.instance?.height* this.instance.scaleY)) {
+      if (this.instance.body?.blocked.down) {
+        this.setPosition(this._config.x ?? 0, (this._config.y ?? 0) - (this.instance.height * this.instance.scaleY - (this._config?.height ?? 0)));
+      }
+    }
+    this.instance?.body?.setSize(this.instance!.width, this.instance!.height);
+    if (this._config.flipX) {
+      this.instance?.body?.setOffset(-1 * this.instance!.width, 0);
     }
   }
 
-  private removeUpdateListener() {
-    if (this._updateListener) {
-      this.scene.events.off('update', this._updateListener);
-      this._updateListener = undefined;
-    }
-  }
 
   reDrawGroup() {
     if (this.group) {
@@ -184,9 +183,17 @@ export class Sprite extends BaseButton<SpriteConfig> {
   }
 
   updatePosition() {
-    const { x, y } = Utils.getWorldPosition(this.instance!);
-    this.setPosition(x, y);
+    if (!this.instance) return;
+    const { x, y } = Utils.getWorldPosition(this.instance);
+    const xOffset = this.config.flipX ? -(this.config.width ?? 0) : 0;  
+    const roundedX = Math.round(x + xOffset);
+    const roundedY = Math.round(y);
+    this.setPosition(roundedX, roundedY);  
+    if (this._config.flipX) {
+      this.instance?.setPosition(this._config.width, 0);
+    } else {
     this.instance?.setPosition(0, 0);
+    }
     this.RefreshBounds();
   }
 
@@ -196,7 +203,7 @@ export class Sprite extends BaseButton<SpriteConfig> {
       this.instance?.setVelocityX(-(this._config.leftVelocity ?? 0));
       this.directionX = 'left';
       this.directionY = 'none';
-      this.updatePosition();
+      this.instance?.setDragX(Math.abs((this._config.leftVelocity ?? 0) * 3));
     }
   }
 
@@ -206,7 +213,7 @@ export class Sprite extends BaseButton<SpriteConfig> {
       this.instance?.setVelocityX(this._config.rightVelocity ?? 0);
       this.directionX = 'right';
       this.directionY = 'none';
-      this.updatePosition();
+      this.instance?.setDragX(Math.abs((this._config.rightVelocity ?? 0) * 3));
     }
   }
 
@@ -215,8 +222,6 @@ export class Sprite extends BaseButton<SpriteConfig> {
       if (velocity) this._config.upVelocity = velocity;
       this.instance?.setVelocityY(-(this._config.upVelocity ?? 0));
       this.directionY = 'up';
-      // this.directionX = 'none';
-      this.updatePosition();
     }
   }
 
@@ -225,24 +230,18 @@ export class Sprite extends BaseButton<SpriteConfig> {
       if (velocity) this._config.downVelocity = velocity;
       this.instance?.setVelocityY(this._config.downVelocity ?? 0);
       this.directionY = 'down';
-      // this.directionX = 'none';
-      this.updatePosition();
     }
   }
 
   public stopHorizontal() {
     if (this._config.enableMove) {
       this.instance?.setVelocityX(0);
-      this.updatePosition();
-      this.handleUpdateListener();
     }
   }
 
   public stopVertical() {
     if (this._config.enableMove) {
       this.instance?.setVelocityY(0);
-      this.updatePosition();
-      this.handleUpdateListener();
     }
   }
 
@@ -264,6 +263,7 @@ export class Sprite extends BaseButton<SpriteConfig> {
 
   public stop() {
     this.instance?.stop();
+    this.updatePosition();
   }
 
   public setFlipX(flip: boolean) {
@@ -280,8 +280,6 @@ export class Sprite extends BaseButton<SpriteConfig> {
   }
 
   destroy(fromScene?: boolean) {
-    // Remove update event listener
-    this.removeUpdateListener();
 
     if (this.group) {
       this.group.clear(true, true);

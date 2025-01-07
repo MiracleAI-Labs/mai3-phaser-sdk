@@ -13,4 +13,5 @@ export interface SpriteConfig
   extends BaseButtonConfig,
     Omit<Phaser.Types.GameObjects.Sprite.SpriteConfig, keyof BaseConfig> {
   animConfigs?: SpriteAnimConfig[];
+  flipX?: boolean;
 }
