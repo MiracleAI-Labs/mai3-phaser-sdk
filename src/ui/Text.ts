@@ -42,6 +42,7 @@ export class Text extends Container<TextConfig> {
     this.text.setStyle(style);
     this.text.setFontStyle(config.textStyle?.fontStyle!);
     this.layout();
+    this.setEventInteractive();
     this.setDepth(this._config?.depth ?? 1);
   }
 
