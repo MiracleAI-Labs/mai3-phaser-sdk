@@ -24,7 +24,7 @@ export class ButtonDemo extends BaseScene {
     this.createImgBtn();
     this.createRoundedBtn();
     this.createTextBtn();
-    this.createConnectWalletBtn();
+    // this.createConnectWalletBtn();
   }
 
   private createImgBtn() {

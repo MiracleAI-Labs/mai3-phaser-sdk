@@ -44,7 +44,7 @@ export class ResizeDemo extends BaseScene {
       y: 100,
       width: 200,
       height: 50,
-      text: "按钮1",
+      text: "button1",
       textStyle: { fontFamily: 'Arial', fontSize: '24px', color: '#FFFFFF' },
       backgroundColor: 0x4CAF50,
       borderColor: 0x45A049,
@@ -62,7 +62,7 @@ export class ResizeDemo extends BaseScene {
       y: 170,
       width: 200,
       height: 50,
-      text: "按钮2",
+      text: "button2",
       textStyle: { fontFamily: 'Arial', fontSize: '24px', color: '#FFFFFF' },
       backgroundColor: 0x2196F3,
       borderColor: 0x1E88E5,
@@ -95,12 +95,6 @@ export class ResizeDemo extends BaseScene {
       }
     });
 
-    const image = this.mai3.add.image({
-      x: 350,
-      y: 100,
-      key: 'cangshu',
-    });
-
-    this.addDragResizeComponents([button1, button2, button3, image]);
+    this.addDragResizeComponents([button1, button2, button3]);
   }
 }

@@ -96,10 +96,10 @@ export class ImageDemo extends BaseScene {
       width: 150,
       height: 150,
       key: "rectangle",
-      text: '居中',
+      text: 'Text',
       textStyle: {
         fontFamily: "Arial",
-        fontSize: "50px",
+        fontSize: "30px",
         color: "#FFFFFF",
       },
     });

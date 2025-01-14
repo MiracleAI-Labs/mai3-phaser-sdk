@@ -162,7 +162,8 @@ class ObjectFactory {
   dropdownMenu(config: DropdownMenuConfig): DropdownMenu {
     return this.createGameObject(DropdownMenu, this.scene, config);
   }
-  Joystick(config: JoystickConfig): Joystick {
+
+  joystick(config: JoystickConfig): Joystick {
     return this.createGameObject(Joystick, this.scene, config);
   }
 };

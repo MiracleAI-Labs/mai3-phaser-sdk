@@ -20,7 +20,6 @@ export class Preloader extends BaseScene {
         this.load.image('logo4', 'assets/images/logo4.jpeg');
         this.load.json('config', 'assets/json/config.json');
         this.load.pack('loadimg', 'assets/json/assetimg.json');
-        //this.load.pack('loadsprites', 'assets/json/assetsprites.json');
 
         this.load.image("mainMenuBg", "assets/images/mainMenuBg.png");
         this.load.image("btn001", "assets/images/btn001.png");
@@ -32,6 +31,7 @@ export class Preloader extends BaseScene {
         this.load.image('scoreBox', 'assets/images/scoreBox.png');
         this.load.image('cangshu', 'assets/images/cangshu.png');
         this.load.image('dialog_bg', 'assets/images/dialog_bg.png');
+        this.load.image('wallet_btn', 'assets/images/wallet_btn.png');
 
         this.load.image('playButton', 'assets/images/playButton.png');
         this.load.image('startButton', 'assets/images/startButton.png');
@@ -105,71 +105,10 @@ export class Preloader extends BaseScene {
         this.load.image("l-star", "/assets/images/listview/star.png");
         this.load.image("l-close", "/assets/images/listview/close.png");
 
-
-        // let progressBar: ProgressBar;
-        // this.load.on('filecomplete-json-config', (key: string) => {
-        //     if (key === 'config') {
-        //         const config = this.cache.json.get('config')
-        //         Object.values(config.proloaderscene.items).forEach((item: any) => {
-        //             if (item.type === "Image") {
-        //                 const img = this.mai3.add.Image(this, {
-        //                     key: "logo2",
-        //                     id: item.elementId,
-        //                     x: item.x,
-        //                     y: item.y,
-        //                 })
-        //                 img.image?.setScale(item.scale)
-        //             }
-
-        //             if (item.type === "Progress") {
-        //                 const bg = (item.strokeImage ?? "") === "" ? item.bg : item.strokeImage
-        //                 const fill = (item.fillTexture ?? "") === "" ? item.fill : item.fillTexture
-        //                 this.mai3.add.progressBar(this, {
-        //                     x: item.x, y: item.y,
-        //                     width: item.widht,
-        //                     height: item.height,
-        //                     radius: item.radius,
-        //                     borderWidth: item.borderWidth,
-        //                     borderColor: item.borderColor,
-        //                     bg: bg,
-        //                     fill: fill,
-        //                 });
-        //             }
-        //         })
-
         this.nextScene = "scenes11"
-
-        //     }
-        // });
 
         const bg = this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x551A8B);
         bg.setOrigin(0, 0);
-
-        // this.config = {
-        //     x: 10, y: 100,
-        //     width: 480,
-        //     height: 40,
-        //     radius: 20,
-        //     borderWidth: 0,
-        //     borderColor: 0xcf4b00,
-        //     bgColor: 0x008B8B,
-        //     fillColor: 0xff8221,
-        // };
-
-        // this.progressBar1 = this.mai3.add.progressBar(this.config);
-
-        // const progressBar2 = this.mai3.add.progressBar({
-        //     x: 10, y: 50,
-        //     width: 480,
-        //     height: 40,
-        //     radius: 10,
-        //     borderWidth: 4,
-        //     borderColor: 0xC71585,
-        //     bgTexture: "strokeImage",
-        //     fillTexture: "progressImage",
-        //     // bg: 0x008B8B,
-        //     // fill: 0xff8221,
-        // });
 
         const config: ProgressBarConfig = {
             x: (this.sys.scale.width - 500) / 2,
@@ -192,53 +131,12 @@ export class Preloader extends BaseScene {
 
         const p1 = this.mai3.add.progressBar(config);
         this.load.on("progress", async (progress: number) => {
-            // console.log('progress: ', progress);
-            // this.progressBar1?.updateProgress(progress);
             p1.value = progress;
-            // progressBar.updateProgress(progress);
-            // this.add.text(10, 10, "isnafosdansa")
         });
     }
 
     async create() {
-        // await MaiGame.Utils.sleep(1000);
-
-        // // this.config!.width = 200;
-        // this.config!.bg = "strokeImage";
-        // // this.config!.fill = 0x00ff00;
-        // this.config!.fill = "progressImage";
-        // this.config!.width = 600;
-        // this.config!.height = 30;
-        // this.config!.radius = 15;
-        // this.progressBar1!.reDraw(this.config);
-        // this.progressBar1!.updateProgress(0.9);
-
-        // await MaiGame.Utils.sleep(2000);
-
-        // this.config!.bg = 0x00ff00;
-        // this.config!.fill = 0xff8221;
-        // // this.config!.fill = "progressImage";
-        // // this.config!.width = 600;
-        // // this.config!.height = 30;
-        // // this.config!.radius = 15;
-        // this.progressBar1!.reDraw(this.config);
-        // this.progressBar1!.updateProgress(0.6);
-        // this.progressBar1?.destroy()
-
-        //this.scene.start('BootScene', { "scene": this.nextScene });
-        // this.scene.start('CheckboxScene');
-        //this.scene.start('PlayScene');
-        // this.scene.start('DialogScene');
-        // this.scene.start('DemoScene');
-        // this.scene.start('DebugBoundDemo');
-        // this.scene.start('DemoScene');
         this.scene.start('DemoScene');
-        // this.scene.start('TextFieldScene');
-        // this.scene.start('Dialog2Scene');
-
-        //this.scene.start('MyGameScene');
-        // this.scene.start('MyGameScene');
-        // this.scene.start('VolumeSliderScene');
     }
     loadDecorations() {
         for (let i = 1; i < 7; i++) {

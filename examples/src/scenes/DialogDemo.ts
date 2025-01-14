@@ -105,7 +105,7 @@ export class DialogDemo extends BaseScene {
             type: 'Text',
             x: 280,
             y: 18,
-            text: 'Update Information',
+            text: 'Title Info',
             autoWidth: true,
             autoHeight: true,
             isWordWrap: true,
@@ -119,9 +119,9 @@ export class DialogDemo extends BaseScene {
         // Add text box
         items.push({
             type: 'Label',
-            x: 70,
+            x: 80,
             y: 130,
-            width: 500,
+            width: 530,
             height: 250,
             text: "Phaser is a fast free, and fun open source HTML5 game framework",
             borderWidth: 6,

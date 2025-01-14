@@ -46,7 +46,7 @@ export class CheckboxDemo extends BaseScene {
         const ckbConfig = {
             x: 10,
             y: 350,
-            text: "Mai3333332",
+            text: "Mai3",
             isChecked: false,
             labelSpace: 10,
             textStyle: {
@@ -119,8 +119,8 @@ export class CheckboxDemo extends BaseScene {
             },
             iconWidth: 50,
             iconHeight: 50,
-            unCheckedTexture: "rectangle",
-            checkedTexture: "circle",
+            unCheckedTexture: "unChecked",
+            checkedTexture: "checked",
         });
 
         checkboxGroup.on('change', (selectedItems: string[]) => {

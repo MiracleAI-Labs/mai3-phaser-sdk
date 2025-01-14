@@ -93,15 +93,15 @@ export class GridDemo extends BaseScene {
         },
       });
 
-      cellItems.push({
-        x: 140,
-        y: 10,
-        width: 40,
-        height: 40,
-        type: "Image",
-        key: "cangshu",
-        draggable: false,
-      });
+      // cellItems.push({
+      //   x: 140,
+      //   y: 10,
+      //   width: 40,
+      //   height: 40,
+      //   type: "Image",
+      //   key: "cangshu",
+      //   draggable: false,
+      // });
 
       rowButtons.push(cellItems);
     }

@@ -47,7 +47,7 @@ export class JoystickDemo extends BaseScene {
             frame: 0,
         });
 
-        this.Joystick = this.mai3.add.Joystick({
+        this.Joystick = this.mai3.add.joystick({
             x: 100,
             y: 200,
             base: {

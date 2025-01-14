@@ -21,7 +21,7 @@ export class TonDemo extends BaseScene {
 
   private createButtons() {
     this.createReturnButton();
-    this.createGameFiAndConnectWalletBtn();
+    // this.createGameFiAndConnectWalletBtn();
     this.createConnectWalletBtn();
   }
 
@@ -34,7 +34,7 @@ export class TonDemo extends BaseScene {
         y: 180,
         width: 200,
         height: 70,
-        texture: "startButton",
+        texture: "wallet_btn",
         language: "en",
         walletApp: "telegram-wallet",
         onWalletChange: (wallet: Wallet | null) => {
@@ -65,7 +65,7 @@ export class TonDemo extends BaseScene {
       width: 200,
       height: 70,
       tonProof: "Hello, this is a message to be signed!",
-      texture: "imgBtn",
+      texture: "wallet_btn",
       language: "en",
       walletApp: "telegram-wallet",
       appUrl: config.APP_URL,
@@ -97,7 +97,7 @@ export class TonDemo extends BaseScene {
       x: 600, y: 10,
       width: 280,
       autoHeight: true,
-      text: 'Connect Wallet',
+      text: 'Show Wallet Address',
       borderWidth: 4,
       radius: 20,
       borderColor: 0xFFD700,

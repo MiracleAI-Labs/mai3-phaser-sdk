@@ -40,7 +40,7 @@ export class TextBoxDemo extends BaseScene {
 
     private createTextArea() {
         const textArea = this.mai3.add.textArea({
-            x: 520,
+            x: 320,
             y: 450,
             width: 300,
             height: 200,
