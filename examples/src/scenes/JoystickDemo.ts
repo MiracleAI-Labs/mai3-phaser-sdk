@@ -16,21 +16,16 @@ export class JoystickDemo extends BaseScene {
     update(time: number, delta: number) {
         super.update(time, delta)
         if (this.Joystick) {
-            const cursorKeys = this.Joystick.instance?.createCursorKeys()
-            if (cursorKeys?.left.isDown) {
-                console.log("cursorKeys==>left");
+            if (this.Joystick.left) {
                 this.Sprite?.setX(this.Sprite?.x! - 1)
             }
-            if (cursorKeys?.right.isDown) {
-                console.log("cursorKeys==>right");
+            if (this.Joystick.right) {
                 this.Sprite?.setX(this.Sprite?.x! + 1)
             }
-            if (cursorKeys?.up.isDown) {
-                console.log("cursorKeys==>up");
+            if (this.Joystick.up) {
                 this.Sprite?.setY(this.Sprite?.y! - 1)
             }
-            if (cursorKeys?.down.isDown) {
-                console.log("cursorKeys==>down");
+            if (this.Joystick.down) {
                 this.Sprite?.setY(this.Sprite?.y! + 1)
             }
         }
@@ -39,7 +34,6 @@ export class JoystickDemo extends BaseScene {
         this.createReturnButton();
 
         this.createJoystick()
-
     }
 
     createJoystick() {
@@ -56,9 +50,16 @@ export class JoystickDemo extends BaseScene {
         this.Joystick = this.mai3.add.Joystick({
             x: 100,
             y: 200,
-            radius: 50,
-            base: this.add.circle(0, 0, 50, 0x888888),
-            thumb: this.add.circle(0, 0, 50 / 2, 0xcccccc)
+            base: {
+                key: "avatar",
+                frame: 0,
+                radius: 50,
+            },
+            thumb: {
+                key: "circle",
+                frame: 0,
+                radius: 25,
+            }
         })
     }
     createReturnButton() {
