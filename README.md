@@ -290,6 +290,16 @@ yarn install
 yarn start
 ```
 
+## Example Screenshots
+
+![Example Home](./examples/public/assets/preview/1.png)
+
+![Dialog](./examples/public/assets/preview/2.png)
+
+![Checkbox](./examples/public/assets/preview/3.png)
+
+![Image](./examples/public/assets/preview/4.png)
+
 ## Contribution
 
 We welcome contributions! If you’d like to help improve **mai3-phaser-sdk**, feel free to submit issues or pull requests on our [GitHub repository](https://github.com/MiracleAI-Labs/mai3-phaser-sdk).
