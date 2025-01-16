@@ -274,7 +274,7 @@ export class Container<
   }
 
   public setChildren(childConfigs?: BaseConfig[]): void {
-    if (!childConfigs) return;
+    if (!childConfigs?.length) return;
     this._config!.childConfigs = childConfigs;
     this.removeAll(true);
     this.scene.setChildren(this, childConfigs);

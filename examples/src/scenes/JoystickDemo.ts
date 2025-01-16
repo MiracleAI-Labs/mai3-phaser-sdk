@@ -16,17 +16,19 @@ export class JoystickDemo extends BaseScene {
     update(time: number, delta: number) {
         super.update(time, delta)
         if (this.Joystick) {
-            if (this.Joystick.left) {
-                this.Sprite?.setX(this.Sprite?.x! - 1)
-            }
-            if (this.Joystick.right) {
-                this.Sprite?.setX(this.Sprite?.x! + 1)
-            }
-            if (this.Joystick.up) {
-                this.Sprite?.setY(this.Sprite?.y! - 1)
-            }
-            if (this.Joystick.down) {
-                this.Sprite?.setY(this.Sprite?.y! + 1)
+            if (this.Joystick.force > 0) {
+                const speed = 100 * this.Joystick.force;
+                const angleInRadians = Phaser.Math.DegToRad(this.Joystick.joystickRotation);
+                const velocityX = speed * Math.cos(angleInRadians);
+                const velocityY = speed * Math.sin(angleInRadians);
+
+                this.Sprite?.instance?.setVelocity(velocityX, velocityY);
+
+                if (velocityX !== 0) {
+                    this.Sprite?.instance?.setFlipX(velocityX < 0);
+                }
+            } else {
+                this.Sprite?.instance?.setVelocity(0, 0);
             }
         }
     }
@@ -45,6 +47,11 @@ export class JoystickDemo extends BaseScene {
             height: 100,
             key: "fight96",
             frame: 0,
+            leftVelocity: 300,
+            rightVelocity: 300,
+            upVelocity: 300,
+            downVelocity: 300,
+            enableMove: true,
         });
 
         this.Joystick = this.mai3.add.joystick({

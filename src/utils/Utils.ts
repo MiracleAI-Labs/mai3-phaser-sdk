@@ -91,7 +91,7 @@ const Utils = {
       return rt;
     }
 
-    const g = scene.make.graphics();
+    const g = scene && scene.make.graphics();
     this.reDrawRoundedRect(g, scene, x, y, width, height, borderWidth, radius, borderColor, fillColor, backgroundAlpha);
     g.setVisible(false);
   
