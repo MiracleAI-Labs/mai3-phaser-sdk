@@ -22,6 +22,7 @@ export class Joystick extends Container<JoystickConfig> {
     constructor(scene: BaseScene, config: JoystickConfig) {
         super(scene, config);
         this.Type = "Joystick";
+        config.geomType = 'Circle';
         this._config = config;
         this.reDraw(config);
     }
@@ -46,6 +47,7 @@ export class Joystick extends Container<JoystickConfig> {
         // Update config dimensions to match calculated radius
         this._config.width = baseRadius * 2;
         this._config.height = baseRadius * 2;
+        this._config.radius = baseRadius;
         this._config.base!.radius = baseRadius;
 
         // Set instance properties
@@ -84,11 +86,11 @@ export class Joystick extends Container<JoystickConfig> {
 
     private setupComponents(): void {
         this.setPosition(this._config.x || 0, this._config.y || 0);
-        this.setScrollFactor(0);
-        this.setupInteractive();
-        this.setEventInteractive();
         this.updateConfig(this._config);
         this.RefreshBounds();
+        this.setScrollFactor(0);
+        this.setEventInteractive();
+        this.setupInteractive();
     }
 
     private createMaskedImage(key: string, radius: number, index: number): {
@@ -106,10 +108,6 @@ export class Joystick extends Container<JoystickConfig> {
             .setPosition(radius, radius)
             .setDisplaySize(radius * 2, radius * 2)
             .setOrigin(0.5)
-            .setInteractive({
-                hitArea: new Phaser.Geom.Circle(radius, radius, radius),
-                hitAreaCallback: Phaser.Geom.Circle.Contains
-            });
 
         this.addChildAt(image, index * 2);
 
@@ -145,9 +143,9 @@ export class Joystick extends Container<JoystickConfig> {
     }
 
     private setupInteractive(): void {
-        if (!this.base) return;
+        if (!this.thumb) return;
 
-        this.base.setInteractive();
+        this.thumb.setInteractive();
         const events = ['pointerdown', 'pointermove', 'pointerup'];
         const handlers = [this.onPointerDown, this.onPointerMove, this.onPointerUp];
 
@@ -157,14 +155,17 @@ export class Joystick extends Container<JoystickConfig> {
     }
 
     private onPointerDown(pointer: Phaser.Input.Pointer): void {
+        if (!this.thumb) return;
+
+        const thumbPos = Utils.getWorldPosition(this.thumb);
         const distance = Phaser.Math.Distance.Between(
-            this.x + this.baseRadius,
-            this.y + this.baseRadius,
+            thumbPos.x,
+            thumbPos.y,
             pointer.x,
             pointer.y
         );
 
-        if (distance <= this.baseRadius) {
+        if (distance <= this.thumbRadius) {
             this.isBeingDragged = true;
             this.pointer = pointer;
             this.updateJoystickPosition(pointer);
