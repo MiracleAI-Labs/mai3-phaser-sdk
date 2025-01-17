@@ -295,9 +295,9 @@ export class ScrollView<
   }
 
   destroy(fromScene?: boolean): void {
-    super.destroy(fromScene);
     this._content?.destroy(fromScene);
     this._scrollBar?.destroy(fromScene);
     this._mask?.destroy(fromScene);
+    super.destroy(fromScene);
   }
 }

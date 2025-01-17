@@ -98,9 +98,9 @@ export class Dialog extends Container<DialogConfig> {
         this._root?.removeAll(true);
         this.getAll().forEach(obj => obj.destroy(true));
         
-        super.destroy(fromScene);
         this._root?.destroy(fromScene);
         this._root = undefined;
         this._config = undefined;
+        super.destroy(fromScene);
     }
 }

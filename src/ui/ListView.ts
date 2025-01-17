@@ -87,4 +87,10 @@ export class ListView extends ScrollView<ListViewConfig> {
 
     this.setDepth(this._config?.depth ?? 1);
   }
+
+  destroy(fromScene?: boolean): void {
+    this._lastItem = undefined;
+    this._config = undefined;
+    super.destroy(fromScene);
+  }
 }

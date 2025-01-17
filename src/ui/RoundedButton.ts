@@ -110,4 +110,20 @@ export class RoundedButton extends BaseButton<RoundedButtonConfig> {
         this.maskShape!.setPosition(bgLeftTopPos.x + btnRadius, bgLeftTopPos.y + btnRadius);
     }
 
+    destroy(fromScene?: boolean) {
+        if (this.bg) {
+            this.bg.destroy();
+            this.bg = undefined;
+        }
+        if (this.image) {
+            this.image.destroy();
+            this.image = undefined;
+        }
+        if (this.maskShape) {
+            this.maskShape.destroy();
+            this.maskShape = undefined;
+        }
+        super.destroy(fromScene);
+    }
+
 }
