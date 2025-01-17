@@ -2,6 +2,7 @@ import { BaseScene } from "../game";
 import { JoystickConfig } from "../types";
 import { Container } from "./Container";
 import { GameObjects } from "phaser";
+import Utils from "../utils";
 
 export class Joystick extends Container<JoystickConfig> {
     protected _config: JoystickConfig;
@@ -15,6 +16,8 @@ export class Joystick extends Container<JoystickConfig> {
     private _angle: number = 0;
     private baseRadius: number = 50;
     private thumbRadius: number = 25;
+    protected maskShape?: Phaser.GameObjects.Graphics;
+    protected thumbMaskShape?: Phaser.GameObjects.Graphics;
 
     constructor(scene: BaseScene, config: JoystickConfig) {
         super(scene, config);
@@ -25,56 +28,132 @@ export class Joystick extends Container<JoystickConfig> {
 
     reDraw(config: JoystickConfig): void {
         this._config = config;
-        this._config.width = (config.base?.radius || 50) * 2;
-        this._config.height = (config.base?.radius || 50) * 2;
-        this.baseRadius = config.base?.radius || 50;
-        this.thumbRadius = config.thumb?.radius || 25;
+        const { width = 0, height = 0 } = config;
+        const defaultBaseRadius = 50;
+        const defaultThumbRadius = 25;
 
-        if (this.base) this.base.destroy();
-        if (this.thumb) this.thumb.destroy();
+        // Calculate base radius from config or use default
+        let baseRadius = 0;
+        if (width > 0 && height > 0) {
+            baseRadius = Math.min(
+                width / 2,
+                height / 2,
+            );
+        } else {
+            baseRadius = config.base?.radius || defaultBaseRadius;
+        }
+
+        // Update config dimensions to match calculated radius
+        this._config.width = baseRadius * 2;
+        this._config.height = baseRadius * 2;
+        this._config.base!.radius = baseRadius;
+
+        // Set instance properties
+        this.baseRadius = baseRadius;
+        this.thumbRadius = config.thumb?.radius || defaultThumbRadius;
+
+        this.clearComponents();
+        this.createComponents();
+        this.setupComponents();
+    }
+
+    private clearComponents(): void {
+        [this.base, this.thumb, this.maskShape, this.thumbMaskShape].forEach(component => {
+            if (component) component.destroy();
+        });
 
         this.base = undefined;
         this.thumb = undefined;
+        this.maskShape = undefined;
+        this.thumbMaskShape = undefined;
+    }
 
+    private createComponents(): void {
         this.createBase();
         this.createThumb();
+        if (this.base && this.thumb) {
+            this.add([this.base, this.thumb]);
+            // Ensure thumb is centered on base
+            this.thumb.setPosition(this.baseRadius, this.baseRadius);
+            if (this.thumbMaskShape) {
+                const imageLeftTopPos = Utils.getWorldPosition(this.thumb);
+                this.thumbMaskShape.setPosition(imageLeftTopPos.x, imageLeftTopPos.y);
+            }
+        }
+    }
 
-        this.add([this.base!, this.thumb!]);
-        this.setPosition(config.x || 0, config.y || 0);
+    private setupComponents(): void {
+        this.setPosition(this._config.x || 0, this._config.y || 0);
         this.setScrollFactor(0);
         this.setupInteractive();
+        this.setEventInteractive();
         this.updateConfig(this._config);
+        this.RefreshBounds();
+    }
+
+    private createMaskedImage(key: string, radius: number, index: number): {
+        image: GameObjects.Image,
+        maskShape: Phaser.GameObjects.Graphics
+    } | undefined {
+        if (!key) {
+            console.warn(`No ${index === 0 ? 'base' : 'thumb'} key provided for joystick`);
+            return;
+        }
+
+        const maskShape = this.scene.add.graphics();
+        const image = this.scene.make.image({})
+            .setTexture(key)
+            .setPosition(radius, radius)
+            .setDisplaySize(radius * 2, radius * 2)
+            .setOrigin(0.5)
+            .setInteractive({
+                hitArea: new Phaser.Geom.Circle(radius, radius, radius),
+                hitAreaCallback: Phaser.Geom.Circle.Contains
+            });
+
+        this.addChildAt(image, index * 2);
+
+        maskShape.clear()
+            .fillStyle(0xffffff)
+            .fillCircle(0, 0, radius);
+
+        const mask = maskShape.createGeometryMask();
+        maskShape.setVisible(false);
+        image.setMask(mask);
+        this.addChildAt(maskShape, index * 2 + 1);
+
+        const imageLeftTopPos = Utils.getWorldPosition(image);
+        maskShape.setPosition(imageLeftTopPos.x, imageLeftTopPos.y);
+
+        return { image, maskShape };
     }
 
     private createBase(): void {
-        this.base = this.scene.add.image(this.baseRadius, this.baseRadius, this._config.base?.key || '')
-            .setFrame(this._config.base?.frame || 0)
-            .setDisplaySize(this.baseRadius * 2, this.baseRadius * 2)
-            .setOrigin(0.5)
-            .setInteractive({
-                hitArea: new Phaser.Geom.Circle(this.baseRadius, this.baseRadius, this.baseRadius),
-                hitAreaCallback: Phaser.Geom.Circle.Contains
-            });
+        const result = this.createMaskedImage(this._config.base?.key || '', this.baseRadius, 0);
+        if (result) {
+            this.base = result.image;
+            this.maskShape = result.maskShape;
+        }
     }
 
     private createThumb(): void {
-        this.thumb = this.scene.add.image(this.baseRadius, this.baseRadius, this._config.thumb?.key || '')
-            .setFrame(this._config.thumb?.frame || 0)
-            .setDisplaySize(this.thumbRadius * 2, this.thumbRadius * 2)
-            .setOrigin(0.5)
-            .setInteractive({
-                hitArea: new Phaser.Geom.Circle(this.thumbRadius, this.thumbRadius, this.thumbRadius),
-                hitAreaCallback: Phaser.Geom.Circle.Contains
-            });
+        const result = this.createMaskedImage(this._config.thumb?.key || '', this.thumbRadius, 1);
+        if (result) {
+            this.thumb = result.image;
+            this.thumbMaskShape = result.maskShape;
+        }
     }
 
     private setupInteractive(): void {
         if (!this.base) return;
 
         this.base.setInteractive();
-        this.scene.input.on('pointerdown', this.onPointerDown, this);
-        this.scene.input.on('pointermove', this.onPointerMove, this);
-        this.scene.input.on('pointerup', this.onPointerUp, this);
+        const events = ['pointerdown', 'pointermove', 'pointerup'];
+        const handlers = [this.onPointerDown, this.onPointerMove, this.onPointerUp];
+
+        events.forEach((event, index) => {
+            this.scene.input.on(event, handlers[index], this);
+        });
     }
 
     private onPointerDown(pointer: Phaser.Input.Pointer): void {
@@ -99,7 +178,6 @@ export class Joystick extends Container<JoystickConfig> {
 
     private onPointerUp(pointer: Phaser.Input.Pointer): void {
         if (this.pointer?.id !== pointer.id) return;
-
         this.resetJoystick();
     }
 
@@ -109,7 +187,12 @@ export class Joystick extends Container<JoystickConfig> {
 
         if (this.thumb) {
             this.thumb.setPosition(this.baseRadius, this.baseRadius);
+            if (this.thumbMaskShape) {
+                const imageLeftTopPos = Utils.getWorldPosition(this.thumb);
+                this.thumbMaskShape.setPosition(imageLeftTopPos.x, imageLeftTopPos.y);
+            }
         }
+
         this.forceX = 0;
         this.forceY = 0;
         this._force = 0;
@@ -117,28 +200,26 @@ export class Joystick extends Container<JoystickConfig> {
     }
 
     private updateJoystickPosition(pointer: Phaser.Input.Pointer): void {
-        if (!this.thumb) return;
+        if (!this.thumb || !this.thumbMaskShape) return;
 
         const deltaX = pointer.x - (this.x + this.baseRadius);
         const deltaY = pointer.y - (this.y + this.baseRadius);
         const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        const angle = Math.atan2(deltaY, deltaX);
 
-        this._angle = Phaser.Math.RadToDeg(Math.atan2(deltaY, deltaX));
+        this._angle = Phaser.Math.RadToDeg(angle);
         this._force = Phaser.Math.Clamp(distance / this.baseRadius, 0, 1);
 
-        if (distance <= this.baseRadius) {
-            this.thumb.setPosition(this.baseRadius + deltaX, this.baseRadius + deltaY);
-            this.forceX = deltaX / this.baseRadius;
-            this.forceY = deltaY / this.baseRadius;
-        } else {
-            const angle = Math.atan2(deltaY, deltaX);
-            this.thumb.setPosition(
-                this.baseRadius + Math.cos(angle) * this.baseRadius,
-                this.baseRadius + Math.sin(angle) * this.baseRadius
-            );
-            this.forceX = Math.cos(angle);
-            this.forceY = Math.sin(angle);
-        }
+        const isWithinRadius = distance <= this.baseRadius;
+        const newX = this.baseRadius + (isWithinRadius ? deltaX : Math.cos(angle) * this.baseRadius);
+        const newY = this.baseRadius + (isWithinRadius ? deltaY : Math.sin(angle) * this.baseRadius);
+
+        this.forceX = isWithinRadius ? deltaX / this.baseRadius : Math.cos(angle);
+        this.forceY = isWithinRadius ? deltaY / this.baseRadius : Math.sin(angle);
+
+        this.thumb.setPosition(newX, newY);
+        const imageLeftTopPos = Utils.getWorldPosition(this.thumb);
+        this.thumbMaskShape.setPosition(imageLeftTopPos.x, imageLeftTopPos.y);
     }
 
     public get force(): number {
@@ -166,28 +247,37 @@ export class Joystick extends Container<JoystickConfig> {
     }
 
     public setVisible(visible: boolean): this {
-        if (this.base) this.base.setVisible(visible);
-        if (this.thumb) this.thumb.setVisible(visible);
+        [this.base, this.thumb].forEach(component => {
+            if (component) component.setVisible(visible);
+        });
         return this;
     }
 
     public setScrollFactor(factor: number): this {
-        if (this.base) this.base.setScrollFactor(factor);
-        if (this.thumb) this.thumb.setScrollFactor(factor);
+        [this.base, this.thumb].forEach(component => {
+            if (component) component.setScrollFactor(factor);
+        });
         return this;
     }
 
+    // Update mask positions without redrawing
+    public updateMaskPos(): void {
+        const basePos = Utils.getWorldPosition(this.base!);
+        const thumbPos = Utils.getWorldPosition(this.thumb!);
+
+        this.maskShape!.setPosition(basePos.x, basePos.y);
+        this.thumbMaskShape!.setPosition(thumbPos.x, thumbPos.y);
+    }
+
     public destroy(): void {
-        this.scene.input.off('pointerdown', this.onPointerDown, this);
-        this.scene.input.off('pointermove', this.onPointerMove, this);
-        this.scene.input.off('pointerup', this.onPointerUp, this);
+        const events = ['pointerdown', 'pointermove', 'pointerup'];
+        const handlers = [this.onPointerDown, this.onPointerMove, this.onPointerUp];
 
+        events.forEach((event, index) => {
+            this.scene.input.off(event, handlers[index], this);
+        });
+
+        this.clearComponents();
         super.destroy();
-
-        if (this.base) this.base.destroy();
-        if (this.thumb) this.thumb.destroy();
-
-        this.base = undefined;
-        this.thumb = undefined;
     }
 }

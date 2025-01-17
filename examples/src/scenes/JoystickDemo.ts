@@ -41,7 +41,7 @@ export class JoystickDemo extends BaseScene {
     createJoystick() {
 
         this.Sprite = this.mai3.add.sprite({
-            x: 200,
+            x: 400,
             y: 200,
             width: 64,
             height: 100,
@@ -58,12 +58,12 @@ export class JoystickDemo extends BaseScene {
             x: 100,
             y: 200,
             base: {
-                key: "avatar",
+                key: "avatar2",
                 frame: 0,
                 radius: 50,
             },
             thumb: {
-                key: "circle",
+                key: "logo",
                 frame: 0,
                 radius: 25,
             }
