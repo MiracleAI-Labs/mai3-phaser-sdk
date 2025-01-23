@@ -34,7 +34,7 @@ class BaseScene extends Phaser.Scene {
       bg.on(event, this.printPointer, this);
     });
 
-    this.printer = this.add.text(1, 1, "指针: 0, 0", {
+    this.printer = this.add.text(1, 1, "pointer: 0, 0", {
       fontSize: "18px",
       color: "#ffffff",
     });
@@ -42,7 +42,7 @@ class BaseScene extends Phaser.Scene {
 
   private printPointer(pointer: Phaser.Input.Pointer) {
     this.printer?.setText(
-      `指针: ${pointer.x.toFixed(2)}, ${pointer.y.toFixed(2)}`
+      `pointer: ${pointer.x.toFixed(2)}, ${pointer.y.toFixed(2)}`
     );
   }
 

@@ -13,6 +13,7 @@ export class RoundedButton extends BaseButton<RoundedButtonConfig> {
     constructor(scene: BaseScene, config: RoundedButtonConfig) {
         config.geomType = 'Circle';
         super(scene, config, 'RoundedButton');
+        this.Type = "RoundedButton";
         this._config = config;
         this.reDraw(this._config);
     }

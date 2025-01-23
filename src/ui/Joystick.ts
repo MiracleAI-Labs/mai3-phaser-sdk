@@ -20,9 +20,9 @@ export class Joystick extends Container<JoystickConfig> {
     protected thumbMaskShape?: Phaser.GameObjects.Graphics;
 
     constructor(scene: BaseScene, config: JoystickConfig) {
+        config.geomType = 'Circle';
         super(scene, config);
         this.Type = "Joystick";
-        config.geomType = 'Circle';
         this._config = config;
         this.reDraw(config);
     }
