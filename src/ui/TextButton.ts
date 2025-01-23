@@ -50,6 +50,7 @@ export class TextButton
 
     this.drawIcon(config);
     this.setDepth(config.depth ?? 1);
+    this.setScrollFactor(config.isScrollFactor ? 0 : 1);
 
     this.updateConfig(config);
     this.RefreshBounds();

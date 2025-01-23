@@ -36,6 +36,7 @@ export class Label extends Panel<LabelConfig> {
     this.RefreshBounds();
     this.updateConfig(this._config);
     this.setDepth(this._config?.depth ?? 1);
+    this.setScrollFactor(this._config.isScrollFactor ? 0 : 1);
   }
 
   private validateConfig(): void {

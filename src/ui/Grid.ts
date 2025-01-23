@@ -35,6 +35,7 @@ export class Grid extends Panel<GridConfig> {
         this.setupGridLayout();
         this.updateConfig(config);
         this.setDepth(config.depth ?? 1);
+        this.setScrollFactor(config.isScrollFactor ? 0 : 1);
     }
 
     private setupContent(): void {

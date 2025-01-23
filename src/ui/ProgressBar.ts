@@ -31,6 +31,7 @@ export class ProgressBar extends Container<ProgressBarConfig> {
     this.value = Math.min(1, Math.max(0, this._config.process ?? 0));
     this.value = Number(this.value.toFixed(2));
     this.updateProgress(this.value);
+    this.setScrollFactor(this._config.isScrollFactor ? 0 : 1);
   }
 
   private createBar(): void {

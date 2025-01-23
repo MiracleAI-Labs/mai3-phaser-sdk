@@ -19,6 +19,7 @@ export class Dialog extends Container<DialogConfig> {
         this._createRoot();
         this._positionDialog();
         this.updateConfig(this._config);
+        this.setScrollFactor(this._config.isScrollFactor ? 0 : 1);
     }
 
     private _createRoot(): void {

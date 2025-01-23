@@ -46,6 +46,7 @@ export class Checkbox extends BaseButton<CheckboxConfig> {
     this._config.height = this.RealHeight;
     this.updateConfig(this._config);
     this.setDepth(this._config?.depth ?? 1);
+    this.setScrollFactor(this._config.isScrollFactor ? 0 : 1);
   }
 
   private reDrawLabel(): void {

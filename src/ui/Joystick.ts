@@ -57,6 +57,8 @@ export class Joystick extends Container<JoystickConfig> {
         this.clearComponents();
         this.createComponents();
         this.setupComponents();
+
+        this.setDepth(config.depth ?? 1);
     }
 
     private clearComponents(): void {
@@ -88,7 +90,8 @@ export class Joystick extends Container<JoystickConfig> {
         this.setPosition(this._config.x || 0, this._config.y || 0);
         this.updateConfig(this._config);
         this.RefreshBounds();
-        this.setScrollFactor(0);
+        this.setScrollFactor(this._config.isScrollFactor ? 0 : 1);
+        // this.setScrollFactor(this._config.isScrollFactor ? 0 : 1);
         this.setEventInteractive();
         this.setupInteractive();
     }

@@ -53,6 +53,7 @@ export class Image extends Container<ImageConfig> {
     this.reDrawText(config);
 
     this.setDepth(config?.depth ?? 1);
+    this.setScrollFactor(config.isScrollFactor ? 0 : 1);
   }
 
   private reDrawImage(

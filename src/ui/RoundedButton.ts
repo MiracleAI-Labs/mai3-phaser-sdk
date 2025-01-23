@@ -44,6 +44,7 @@ export class RoundedButton extends BaseButton<RoundedButtonConfig> {
         this._config.width = this.RealWidth;
         this._config.height = this.RealHeight;
         this.setDepth(this._config?.depth ?? 1);
+        this.setScrollFactor(this._config.isScrollFactor ? 0 : 1);
     }
 
     reDrawBg(x: number, y: number, radius: number, borderWidth: number, borderColor: number, fillColor: number, backgroundAlpha: number) {

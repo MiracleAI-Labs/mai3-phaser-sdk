@@ -25,6 +25,7 @@ export class CheckboxGroup extends BaseButton<CheckboxGroupConfig> {
         this.updateConfig(this._config);
         this.RefreshBounds();
         this.setDepth(this._config.depth ?? 1);
+        this.setScrollFactor(this._config.isScrollFactor ? 0 : 1);
     }
 
     private _setDefaultConfig(): void {

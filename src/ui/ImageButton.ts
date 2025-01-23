@@ -50,6 +50,7 @@ export class ImageButton extends BaseButton<ImageButtonConfig> {
     this.reDrawText(config);
     this.updateConfig(config);
     this.setDepth(config?.depth ?? 1);
+    this.setScrollFactor(this._config.isScrollFactor ? 0 : 1);
   }
 
   public reDrawText(config: ImageButtonConfig) {
