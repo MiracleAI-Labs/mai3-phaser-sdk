@@ -43,6 +43,10 @@ export class Sprite extends BaseButton<SpriteConfig> {
     if (this._config.isStatic) {
       this.instance?.setImmovable(true);
     }
+    if (this._config.isCameraFollow) {
+      this.scene.cameras.main.startFollow(this.instance, true);
+    }
+
     this.instance?.setGravityY(this._config.gravity ?? 0);
     this.instance?.setCollideWorldBounds(true);
     this.instance?.setDisplaySize(this._config.width, this._config.height);

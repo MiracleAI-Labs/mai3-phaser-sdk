@@ -105,6 +105,7 @@ export class Container<
   ): void {
     const [clampedX, clampedY] = this.getClampedPosition(dragX, dragY);
     this.setPosition(clampedX, clampedY);
+    // this.setPosition(dragX, dragY);
     this.onDragUpdate(pointer, this.x, this.y);
   }
 
@@ -150,7 +151,7 @@ export class Container<
     dragX: number,
     dragY: number
   ): void {
-    console.log(pointer, dragX, dragY);
+    // console.log(pointer, dragX, dragY);
   }
 
   get id(): string {
