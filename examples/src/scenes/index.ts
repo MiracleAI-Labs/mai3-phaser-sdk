@@ -18,6 +18,7 @@ import { TonDemo } from "./TonDemo";
 import { ScrollViewDemo } from "./ScrollViewDemo";
 import { ListViewDemo } from "./ListViewDemo";
 import { JoystickDemo } from "./JoystickDemo";
+import { SOLDemo } from "./SOLDemo";
 
 export {
   Boot,
@@ -39,5 +40,6 @@ export {
   TonDemo,
   ScrollViewDemo,
   ListViewDemo,
-  JoystickDemo
+  JoystickDemo,
+  SOLDemo,
 };
