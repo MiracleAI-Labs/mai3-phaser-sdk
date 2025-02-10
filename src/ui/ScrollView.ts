@@ -295,6 +295,11 @@ export class ScrollView<
   }
 
   destroy(fromScene?: boolean): void {
+    // Remove event listeners
+    this.scene.input.off("pointerdown", this.handleDown, this);
+    this.scene.input.off("pointermove", this.handleMove, this);
+    this.scene.input.off("pointerup", this.handleUp, this);
+    
     this._content?.destroy(fromScene);
     this._scrollBar?.destroy(fromScene);
     this._mask?.destroy(fromScene);

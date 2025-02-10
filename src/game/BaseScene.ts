@@ -9,9 +9,13 @@ class BaseScene extends Phaser.Scene {
   public resizableManager: ResizableComponentManager;
   private printer?: Phaser.GameObjects.Text;
   private isDebugPrint: boolean = true;
+  private width?: number;
+  private height?: number;
 
-  constructor(key: string) {
+  constructor(key: string, width?: number, height?: number) {
     super({ key });
+    this.width = width;
+    this.height = height;
     this.resizableManager = new ResizableComponentManager(this);
   }
 
@@ -25,7 +29,7 @@ class BaseScene extends Phaser.Scene {
 
   public setupDebugEnvironment() {
     const bg = this.add
-      .rectangle(0, 0, this.scale.width, this.scale.height, 0x434349)
+      .rectangle(0, 0, this.width || this.scale.width, this.height || this.scale.height, 0x434349)
       .setOrigin(0, 0)
       .setInteractive()
       .setDepth(-1);
