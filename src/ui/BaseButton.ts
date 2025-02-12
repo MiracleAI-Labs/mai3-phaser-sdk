@@ -20,6 +20,12 @@ export class BaseButton<T extends BaseButtonConfig = BaseButtonConfig> extends C
   }
 
   private setupEventListeners(): void {
+    this.off("pointerover", this.handleOver, this);
+    this.off("pointerout", this.handleOut, this);
+    this.off("pointerdown", this.handleDown, this);
+    this.off("pointerup", this.handleUp, this);
+    this.off("pointerupoutside", this.handleUp, this);
+
     this.on("pointerover", this.handleOver, this);
     this.on("pointerout", this.handleOut, this);
     this.on("pointerdown", this.handleDown, this);
