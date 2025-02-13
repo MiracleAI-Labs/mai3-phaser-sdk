@@ -20,28 +20,33 @@ export class ConnectSOLWalletButton extends BaseButton<ConnectSOLWalletButtonCon
 
   public reDraw(config: ConnectSOLWalletButtonConfig): void {
     this._config = config;
-    SOLConnector.init(
-      config,
-      async (wallet: IProvider | null) => {
-        if (wallet) {
-          const address = (await SOLConnector.getAccountAddress()) ?? "";
-          let shortAddress =
-            address.substring(0, 4) +
-            "..." +
-            address.substring(address.length - 4);
-          let fullAddress = address;
-          this.setData("shortAddress", shortAddress);
-          this.setData("fullAddress", fullAddress);
-        } else {
-          this.setData("shortAddress", "");
-          this.setData("fullAddress", "");
+    if (config.mock) {
+      //
+    } else {
+      SOLConnector.init(
+        config,
+        async (wallet: IProvider | null) => {
+          if (wallet) {
+            const address = (await SOLConnector.getAccountAddress()) ?? "";
+            let shortAddress =
+              address.substring(0, 4) +
+              "..." +
+              address.substring(address.length - 4);
+            let fullAddress = address;
+            this.setData("shortAddress", shortAddress);
+            this.setData("fullAddress", fullAddress);
+          } else {
+            this.setData("shortAddress", "");
+            this.setData("fullAddress", "");
+          }
+          this._config.onWalletChange?.(wallet, this.getFullAddress());
+        },
+        (signMessage: string, signature: ArrayBuffer) => {
+          this._config.onSigned?.(signMessage, signature, this.getFullAddress());
         }
-        this._config.onWalletChange?.(wallet);
-      },
-      (signMessage: string, signature: ArrayBuffer) => {
-        this._config.onSigned?.(signMessage, signature);
-      }
-    );
+      );
+    }
+    
 
     this.reDrawButton();
 
@@ -91,6 +96,13 @@ export class ConnectSOLWalletButton extends BaseButton<ConnectSOLWalletButtonCon
   }
 
   connectWallet = async () => {
+    if (this.config.mock) {
+      const address = localStorage.getItem("userAddress") ?? "";
+      this.setData("fullAddress", address);
+      this.setData("shortAddress", address && address.length > 0 ? (address.substring(0, 4) + "..." + address.substring(address.length - 4)) : "");
+      this._config.onWalletChange?.(null, this.getFullAddress());
+      return;
+    }
     try {
       await SOLConnector.openModal();
     } catch (err) {
