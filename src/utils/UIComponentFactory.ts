@@ -17,6 +17,7 @@ import {
   Grid,
   ListView,
   ConnectWalletButton,
+  ConnectSOLWalletButton,
   Dialog,
   Joystick
 } from "../ui/index";
@@ -43,6 +44,7 @@ class UIComponentFactory {
     Grid,
     ListView,
     ConnectWalletButton,
+    ConnectSOLWalletButton,
     Dialog,
     Joystick
   };

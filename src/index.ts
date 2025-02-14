@@ -23,6 +23,7 @@ import Utils from "./utils";
 import { ScrollView } from "./ui/ScrollView";
 import { Sprite } from "./ui/Sprite";
 import { ConnectWalletButton } from "./ui/ConnectWalletButton";
+import { ConnectSOLWalletButton } from "./ui/ConnectSOLWalletButton";
 import { ListView } from "./ui/ListView";
 
 export {
@@ -48,6 +49,7 @@ export {
   ScrollView,
   Sprite,
   ConnectWalletButton,
+  ConnectSOLWalletButton,
   Mai3Plugin,
   Mai3Game,
   Types,
@@ -78,6 +80,7 @@ const Mai3 = {
   ScrollView: ScrollView,
   Sprite: Sprite,
   ConnectWalletButton: ConnectWalletButton,
+  ConnectSOLWalletButton: ConnectSOLWalletButton,
   Mai3Plugin: Mai3Plugin,
   Mai3Game: Mai3Game,
   Types: Types,
