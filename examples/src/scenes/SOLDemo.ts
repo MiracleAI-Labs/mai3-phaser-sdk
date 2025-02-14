@@ -1,7 +1,6 @@
 // import { loadConfig } from "@/config";
 import { BaseScene, Label } from "../../../dist";
 import { LabelConfig } from "../../../dist/types";
-import { IProvider } from "@web3auth/base";
 export class SOLDemo extends BaseScene {
   label?: Label;
 
@@ -30,10 +29,13 @@ export class SOLDemo extends BaseScene {
       width: 200,
       height: 70,
       texture: "wallet_btn",
-      network: "sapphire_devnet",
-      clientId:
-        "BL8JO1voF0HnrUE0bm8GtTxRXEtKRp2mymQIWFQqR0zLY4os6EfHCSLe77H_nRgic2b1uh8xYeqb9akI87BLZ3Q",
-      onWalletChange: (wallet: IProvider | null) => {
+      network: "devnet",
+      name: "Mai3",
+      description: "Mai3 Example",
+      url: "https://example.com",
+      icon: "https://avatars.githubusercontent.com/u/179229932",
+      projectId: "14Q85T7sHKqY8q6JQocbrqiV7yVSqT4aSyHYCxXrzKA",
+      onWalletChange: (wallet: unknown, address?: string) => {
         console.log("shortAddress: ", btn.getShortAddress());
         console.log("fullAddress: ", btn.getFullAddress());
         if (wallet) {
@@ -42,9 +44,10 @@ export class SOLDemo extends BaseScene {
           this.label!.Text = "Show Wallet Address";
         }
       },
-      onSigned: (signMessage: string, signature: ArrayBuffer) => {
+      onSigned: (signMessage: string, signature: string, address?: string) => {
         console.log("signMessage: ", signMessage);
         console.log("signature: ", signature);
+        console.log("address: ", address);
       },
       handleUp: {
         handleFn: () => {

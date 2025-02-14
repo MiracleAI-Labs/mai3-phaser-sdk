@@ -36,17 +36,15 @@
   },
   "dependencies": {
     "@orbs-network/ton-access": "^2.3.3",
+    "@reown/appkit": "^1.6.8",
+    "@reown/appkit-adapter-solana": "^1.6.8",
+    "@solana/wallet-adapter-wallets": "^0.19.32",
     "@ton-community/assets-sdk": "^0.0.5",
     "@ton/core": "^0.59.0",
     "@ton/crypto": "^3.3.0",
     "@ton/ton": "^15.1.0",
     "@tonconnect/ui": "^2.0.9",
-    "@web3auth/base": "^9.5.4",
-    "@web3auth/default-solana-adapter": "^9.5.4",
-    "@web3auth/modal": "^9.5.4",
     "buffer": "^6.0.3",
-    "phaser": "^3.86.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "phaser": "^3.86.0"
   }
 }

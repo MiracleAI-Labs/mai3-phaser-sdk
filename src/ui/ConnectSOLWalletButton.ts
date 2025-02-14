@@ -1,14 +1,11 @@
 import { ConnectSOLWalletButtonConfig } from "../types";
-import Utils from "../utils";
 import { BaseScene } from "../game";
 import { BaseButton } from "./BaseButton";
 import { ImageButton } from "./ImageButton";
 
 import { SOLConnector } from "../game/SOLConnetor";
-import { IProvider } from "@web3auth/base";
 
 export class ConnectSOLWalletButton extends BaseButton<ConnectSOLWalletButtonConfig> {
-  wallet: IProvider | null = null;
   private button?: ImageButton;
   protected _config: ConnectSOLWalletButtonConfig;
 
@@ -25,9 +22,8 @@ export class ConnectSOLWalletButton extends BaseButton<ConnectSOLWalletButtonCon
     } else {
       SOLConnector.init(
         config,
-        async (wallet: IProvider | null) => {
-          if (wallet) {
-            const address = (await SOLConnector.getAccountAddress()) ?? "";
+        (wallet: unknown, address?: string) => {
+          if (address && address.length > 0) {
             let shortAddress =
               address.substring(0, 4) +
               "..." +
@@ -41,12 +37,15 @@ export class ConnectSOLWalletButton extends BaseButton<ConnectSOLWalletButtonCon
           }
           this._config.onWalletChange?.(wallet, this.getFullAddress());
         },
-        (signMessage: string, signature: ArrayBuffer) => {
-          this._config.onSigned?.(signMessage, signature, this.getFullAddress());
+        (signMessage: string, signature: string) => {
+          this._config.onSigned?.(
+            signMessage,
+            signature,
+            this.getFullAddress()
+          );
         }
       );
     }
-    
 
     this.reDrawButton();
 
@@ -99,7 +98,14 @@ export class ConnectSOLWalletButton extends BaseButton<ConnectSOLWalletButtonCon
     if (this.config.mock) {
       const address = localStorage.getItem("userAddress") ?? "";
       this.setData("fullAddress", address);
-      this.setData("shortAddress", address && address.length > 0 ? (address.substring(0, 4) + "..." + address.substring(address.length - 4)) : "");
+      this.setData(
+        "shortAddress",
+        address && address.length > 0
+          ? address.substring(0, 4) +
+              "..." +
+              address.substring(address.length - 4)
+          : ""
+      );
       this._config.onWalletChange?.(null, this.getFullAddress());
       return;
     }
