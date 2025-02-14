@@ -34,33 +34,6 @@
 - ✅ ScrollView
 - ✅ ListView
 
-## future implementation:
-
-- 🚧 FloatButton
-- 🚧 Divider
-- 🚧 Flex
-- 🚧 Space
-- 🚧 Splitter
-- 🚧 Dropdown
-- 🚧 Menu
-- 🚧 Pagination
-- 🚧 ColorPicker
-- 🚧 Form
-- 🚧 InputNumber
-- 🚧 Rate
-- 🚧 Avatar
-- 🚧 Badge
-- 🚧 Card
-- 🚧 Carousel
-- 🚧 Popover
-- 🚧 Table
-- 🚧 Tooltip
-- 🚧 Alert
-- 🚧 QRCode
-- 🚧 Segmented
-- 🚧 Tree
-
-
 ## Installation
 
 Install **mai3-phaser-sdk** via npm or yarn:
@@ -113,92 +86,7 @@ export class ButtonDemo extends BaseScene {
   }
 
   create() {
-    this.createButtons();
-  }
-
-  private createButtons() {
-    this.createTextButton();
-    this.createDraggableButton();
-    this.createRoundedButton();
     this.createImageButton();
-  }
-
-  private createTextButton() {
-    this.mai3.add.textButton({
-      x: 10,
-      y: 70,
-      width: 200,
-      height: 80,
-      borderColor: 0x900C3F,
-      borderWidth: 3,
-      backgroundColor: 0xC70039,
-      text: "Close Window",
-      radius: 20,
-      textStyle: {
-        fontFamily: 'Arial',
-        fontSize: '24px',
-        color: '#FFFFFF',
-      },
-      handleHover: {
-        audio: "sfx-hover",
-      },
-      handleDown: {
-        audio: "sfx-press",
-      },
-      handleUp: {
-        handleFn: () => {
-          // Add action for handleUp if needed
-        }
-      },
-    });
-  }
-
-  private createDraggableButton() {
-    const btn = this.mai3.add.textButton({
-      x: 220,
-      y: 70,
-      borderColor: 0xFF5733,
-      borderWidth: 3,
-      backgroundColor: 0xFFC300,
-      text: "Mai3 (Draggable)",
-      radius: 20,
-      textStyle: {
-        fontFamily: 'Arial',
-        fontSize: '24px',
-        color: '#000000',
-      },
-      handleHover: {
-        audio: "sfx-hover",
-      },
-      handleDown: {
-        audio: "sfx-press",
-        handleFn: () => {
-          btn.text = "Hello There";
-        }
-      },
-      enableDrag: true
-    });
-  }
-
-  private createRoundedButton() {
-    this.mai3.add.roundedButton({
-      x: 430,
-      y: 70,
-      radius: 100,
-      texture: "cangshu",
-      borderWidth: 6,
-      borderColor: 0xFFD700,
-      backgroundColor: 0x32CD32,
-      handleHover: {
-        audio: "sfx-hover"
-      },
-      handleDown: {
-        audio: "sfx-press",
-        handleFn: () => {
-          // Add action for handleDown if needed
-        }
-      },
-    });
   }
 
   private createImageButton() {

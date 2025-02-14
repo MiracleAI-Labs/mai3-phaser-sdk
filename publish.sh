@@ -1,6 +1,6 @@
 #!/bin/bash
 
-npm version patch  
-npm run build      
-npm publish        
+sudo npm version patch  
+sudo npm run build      
+sudo npm publish        
 
