@@ -209,6 +209,7 @@ export default class ResizableComponentManager {
 
   public updateResizeHandles(componentIndex: number) {
     const component = this.components[componentIndex];
+    if (!component) return;
     const resizeContainer = this.resizeContainers[componentIndex];
     const padding = 5;
 
