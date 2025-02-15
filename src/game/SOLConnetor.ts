@@ -70,13 +70,13 @@ export class SOLConnector {
 
   public static async openModal() {
     const sign = async () => {
-      const signature = await this.signMessage(
+      const result = await this.signMessage(
         this.config.signMessage ?? "Sign in with Solana"
       );
-      if (signature) {
+      if (result) {
         this.onSigned?.(
-          this.config.signMessage ?? "Sign in with Solana",
-          signature ?? "",
+          result.signMessage ?? "Sign in with Solana",
+          result.signature ?? "",
           this.getAccountAddress()
         );
       }
@@ -141,7 +141,10 @@ export class SOLConnector {
         throw new Error("Failed to sign message");
       }
       this.isSigning = false;
-      return signedMessage;
+      return {
+        signMessage: str,
+        signature: signedMessage,
+      };
     } catch (err) {
       this.isSigning = false;
       throw err;
