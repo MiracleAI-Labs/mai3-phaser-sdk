@@ -286,11 +286,11 @@ export class Sprite extends BaseButton<SpriteConfig> {
 
   destroy(fromScene?: boolean) {
 
-    if (this.group) {
-      this.group.clear(true, true);
-      this.group.destroy(true);
-      this.group = undefined;
-    }
+    // if (this.group) {
+    //   this.group.clear(true, true);
+    //   this.group.destroy(true);
+    //   this.group = undefined;
+    // }
 
     if (this.instance) {
       if (this.instance.body) {
