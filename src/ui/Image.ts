@@ -44,6 +44,7 @@ export class Image extends Container<ImageConfig> {
       if (radius > 0) {
         this.reDrawMaskShape(radius, 0xffffff, false);
       } else {
+        this.maskShape.destroy(true);
         this.image.clearMask();
       }
     }
@@ -89,7 +90,7 @@ export class Image extends Container<ImageConfig> {
     let mask = this.maskShape!.createGeometryMask();
     this.maskShape!.setVisible(false);
     this.image!.setMask(mask);
-    this.addChildAt(this.maskShape!, 1);
+    this.addChildAt(this.maskShape!, 0);
   }
 
   public reDrawText(config: ImageConfig) {
