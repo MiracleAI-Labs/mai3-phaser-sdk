@@ -68,7 +68,7 @@ export class Image extends Container<ImageConfig> {
     this.image?.setPosition(x, y);
     this.image?.setDisplaySize(w, h);
     this.image?.setOrigin(0);
-    this.addChildAt(this.image!, 0);
+    this.addChildAt(this.image!, 1);
   }
 
   private reDrawMaskShape(

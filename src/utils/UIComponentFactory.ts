@@ -19,7 +19,8 @@ import {
   ConnectWalletButton,
   ConnectSOLWalletButton,
   Dialog,
-  Joystick
+  Joystick,
+  EnemyContainer
 } from "../ui/index";
 import { BaseScene } from "../game";
 import { BaseConfig } from "../types";
@@ -46,7 +47,8 @@ class UIComponentFactory {
     ConnectWalletButton,
     ConnectSOLWalletButton,
     Dialog,
-    Joystick
+    Joystick,
+    EnemyContainer
   };
 
   public static createChildFromConfig(

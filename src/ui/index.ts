@@ -21,3 +21,4 @@ export * from "./ConnectWalletButton";
 export * from "./ConnectSOLWalletButton";
 export * from "./ListView";
 export * from "./Joystick";
+export * from "./EnemyContainer";

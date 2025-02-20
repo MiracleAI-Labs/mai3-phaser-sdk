@@ -29,6 +29,7 @@ import { DropdownMenuConfig } from "../ui/DropdownMenu";
 import { ListView } from "../ui";
 import { Joystick } from "../ui/Joystick";
 import { ConnectSOLWalletButton } from "../ui/ConnectSOLWalletButton";
+import { EnemyContainer } from "../ui/EnemyContainer";
 
 type Constructor<T extends Phaser.GameObjects.GameObject> = new (...args: any[]) => T;
 
@@ -170,6 +171,10 @@ class ObjectFactory {
 
   joystick(config: JoystickConfig): Joystick {
     return this.createGameObject(Joystick, this.scene, config);
+  }
+
+  enemyContainer(config: BaseConfig): EnemyContainer {
+    return this.createGameObject(EnemyContainer, this.scene, config);
   }
 };
 export default ObjectFactory;
