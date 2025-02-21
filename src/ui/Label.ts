@@ -24,6 +24,7 @@ export class Label extends Panel<LabelConfig> {
     super(scene, { ...config, width, height });
     this._config = config;
     this.Type = 'Label';
+    this.scene = scene;
 
     this.reDraw(config);
   }
@@ -114,7 +115,7 @@ export class Label extends Panel<LabelConfig> {
   }
 
   get Text(): string {
-    return this.label!.text;
+    return this.label?.text ?? '';
   }
 
   set Text(text: string) {
