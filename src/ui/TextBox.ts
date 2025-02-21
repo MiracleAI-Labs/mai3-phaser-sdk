@@ -20,16 +20,16 @@ export class TextBox<T extends TextBoxConfig = TextBoxConfig> extends Container<
     private static measureContext: CanvasRenderingContext2D | null = null;
     private static activeTextBox: TextBox | null = null;
 
-    private isFocus: boolean = false;
-    private charWidths: number[] = [];
-    private selectionStart?: number;
-    private selectionEnd?: number;
-    private isSelecting: boolean = false;
-    private maxWidth: number = 100;
-    private isComposing: boolean = false;
-    private compositionText: string = '';
-    private placeholder: string = '';
-    private previousValue: string = '';
+    protected isFocus: boolean = false;
+    protected charWidths: number[] = [];
+    protected selectionStart?: number;
+    protected selectionEnd?: number;
+    protected isSelecting: boolean = false;
+    protected maxWidth: number = 100;
+    protected isComposing: boolean = false;
+    protected compositionText: string = '';
+    protected placeholder: string = '';
+    protected previousValue: string = '';
 
     constructor(scene: BaseScene, config: T) {
         super(scene, config, 'TextBox');
