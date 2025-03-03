@@ -36,8 +36,9 @@
   },
   "dependencies": {
     "@orbs-network/ton-access": "^2.3.3",
-    "@reown/appkit": "^1.6.8",
+    "@reown/appkit": "^1.6.9",
     "@reown/appkit-adapter-solana": "^1.6.8",
+    "@reown/appkit-adapter-wagmi": "^1.6.9",
     "@solana/wallet-adapter-wallets": "^0.19.32",
     "@ton-community/assets-sdk": "^0.0.5",
     "@ton/core": "^0.59.0",
@@ -45,6 +46,8 @@
     "@ton/ton": "^15.1.0",
     "@tonconnect/ui": "^2.0.9",
     "buffer": "^6.0.3",
-    "phaser": "^3.86.0"
+    "phaser": "^3.86.0",
+    "viem": "^2.23.5",
+    "wagmi": "^2.14.12"
   }
 }

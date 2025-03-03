@@ -36,3 +36,4 @@ export * from "./components/ToastConfig";
 export * from "./components/VolumeSliderConfig";
 export * from "./components/JoystickConfig";
 export * from "./components/ConnectSOLWalletButtonConfig";
+export * from "./components/ConnectEVMWalletButtonConfig";

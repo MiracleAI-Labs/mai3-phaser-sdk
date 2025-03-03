@@ -10,7 +10,8 @@
     "target": "ES5",  // 编译目标版本
     "esModuleInterop": true,  // 兼容 CommonJS 和 ES 模块
     "strict": true,  // 启用严格模式
-    "skipLibCheck": true  // 忽略库的类型检查
+    "skipLibCheck": true,  // 忽略库的类型检查
+    "resolveJsonModule": true  // 支持导入 JSON 文件
   },
   "include": [
     "src/**/*.ts",  // 包含 src 目录中的 TypeScript 文件

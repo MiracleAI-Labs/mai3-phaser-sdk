@@ -32,8 +32,8 @@ export default class ResizableComponentManager {
 
   private createResizeHandles(componentIndex: number) {
     const component = this.components[componentIndex];
-    const handleSize = 10;
-    const padding = 5;
+    const handleSize = 8;
+    const padding = 0;
     const positions = this.getComponentBorderPositions(component, padding);
 
     const pos = component.getWorldTransformMatrix();
@@ -45,7 +45,7 @@ export default class ResizableComponentManager {
     this.resizeContainers.push(resizeContainer);
 
     const borderGraphics = this.scene.add.graphics();
-    borderGraphics.lineStyle(2, 0xffffff, 1);
+    borderGraphics.lineStyle(1, 0xffffff, 1);
     borderGraphics.strokeRect(
       0,
       0,
@@ -211,7 +211,7 @@ export default class ResizableComponentManager {
     const component = this.components[componentIndex];
     if (!component) return;
     const resizeContainer = this.resizeContainers[componentIndex];
-    const padding = 5;
+    const padding = 1;
 
     const pos = component.getWorldTransformMatrix();
     component.RefreshBounds();
@@ -221,7 +221,7 @@ export default class ResizableComponentManager {
     const borderGraphics = resizeContainer
       .list[0] as Phaser.GameObjects.Graphics;
     borderGraphics?.clear();
-    borderGraphics?.lineStyle(2, 0xffffff, 1);
+    borderGraphics?.lineStyle(1, 0xffffff, 1);
     borderGraphics?.strokeRect(
       0,
       0,

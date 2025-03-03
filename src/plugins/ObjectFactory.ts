@@ -11,7 +11,7 @@ import { Container } from "../ui/Container";
 import { RoundedButton } from "../ui/RoundedButton";
 import { TextButton } from "../ui/TextButton";
 import { ImageButton } from "../ui/ImageButton";
-import { BaseConfig, ButtonConfig, CheckboxConfig, CheckboxGroupConfig, DialogConfig, ImageButtonConfig, ImageConfig, LabelConfig, LinearLayoutConfig, RoundedButtonConfig, SliderConfig, TabsConfig, TextBoxConfig, TextConfig, ToastConfig, ScrollViewConfig, VolumeSliderConfig, PanelConfig, GridConfig, SpriteConfig, ConnectWalletButtonConfig, ProgressBarConfig, ListViewConfig, JoystickConfig, ConnectSOLWalletButtonConfig } from '../types';
+import { BaseConfig, ButtonConfig, CheckboxConfig, CheckboxGroupConfig, DialogConfig, ImageButtonConfig, ImageConfig, LabelConfig, LinearLayoutConfig, RoundedButtonConfig, SliderConfig, TabsConfig, TextBoxConfig, TextConfig, ToastConfig, ScrollViewConfig, VolumeSliderConfig, PanelConfig, GridConfig, SpriteConfig, ConnectWalletButtonConfig, ProgressBarConfig, ListViewConfig, JoystickConfig, ConnectSOLWalletButtonConfig, ConnectEVMWalletButtonConfig } from '../types';
 import { BaseScene } from "../game";
 import { TextBox } from "../ui/TextBox";
 import { Tabs } from "../ui/Tabs";
@@ -29,6 +29,7 @@ import { DropdownMenuConfig } from "../ui/DropdownMenu";
 import { ListView } from "../ui";
 import { Joystick } from "../ui/Joystick";
 import { ConnectSOLWalletButton } from "../ui/ConnectSOLWalletButton";
+import { ConnectEVMWalletButton } from "../ui/ConnectEVMWalletButton";
 import { EnemyContainer } from "../ui/EnemyContainer";
 
 type Constructor<T extends Phaser.GameObjects.GameObject> = new (...args: any[]) => T;
@@ -163,6 +164,10 @@ class ObjectFactory {
 
   connectSOLWalletButton(config: ConnectSOLWalletButtonConfig): ConnectSOLWalletButton {
     return this.createGameObject(ConnectSOLWalletButton, this.scene, config);
+  }
+
+  connectEVMWalletButton(config: ConnectEVMWalletButtonConfig): ConnectEVMWalletButton {
+    return this.createGameObject(ConnectEVMWalletButton, this.scene, config);
   }
 
   dropdownMenu(config: DropdownMenuConfig): DropdownMenu {

@@ -23,7 +23,7 @@ export class DemoScene extends BaseScene {
             padding: { all: 20 },
             rowGap: 10,
             columnGap: 10,
-            rows: 6,
+            rows: 7,
             columns: 3,
             autoFill: true,
             draggable: false,
@@ -55,6 +55,7 @@ export class DemoScene extends BaseScene {
             { name: 'ListView Demo', scene: 'ListViewDemo', color: 0x009688 },
             { name: 'Joystick Demo ', scene: 'JoystickDemo', color: 0x9C277B },
             { name: 'SOL Demo ', scene: 'SOLDemo', color: 0x9C277B },
+            { name: 'EVM Demo ', scene: 'EVMDemo', color: 0x009688 },
         ];
 
         const rowButtons = [];
