@@ -1,5 +1,6 @@
 import { Padding, PhaserTextPadding, RoundedRectRadius } from "../types";
 import {Address} from '../common/external';
+import { EVMConnector } from "../game/EVMConnetor";
 
 const Horizontal = [0, 'x', 'h', 'horizontal', 'left-to-right'];
 const Vertical = [1, 'y', 'v', 'vertical', 'top-to-bottom'];
@@ -224,7 +225,12 @@ const Utils = {
     const y = top;
     
     return { x, y, left, right, top, bottom}
+  },
+
+  evmConnector() {
+    return EVMConnector;
   }
+  
 }
 
 export default Utils;

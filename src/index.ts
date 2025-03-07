@@ -24,6 +24,7 @@ import { ScrollView } from "./ui/ScrollView";
 import { Sprite } from "./ui/Sprite";
 import { ConnectWalletButton } from "./ui/ConnectWalletButton";
 import { ConnectSOLWalletButton } from "./ui/ConnectSOLWalletButton";
+import { ConnectEVMWalletButton } from "./ui/ConnectEVMWalletButton";
 import { ListView } from "./ui/ListView";
 
 export {
@@ -50,6 +51,7 @@ export {
   Sprite,
   ConnectWalletButton,
   ConnectSOLWalletButton,
+  ConnectEVMWalletButton,
   Mai3Plugin,
   Mai3Game,
   Types,
@@ -81,6 +83,7 @@ const Mai3 = {
   Sprite: Sprite,
   ConnectWalletButton: ConnectWalletButton,
   ConnectSOLWalletButton: ConnectSOLWalletButton,
+  ConnectEVMWalletButton: ConnectEVMWalletButton,
   Mai3Plugin: Mai3Plugin,
   Mai3Game: Mai3Game,
   Types: Types,

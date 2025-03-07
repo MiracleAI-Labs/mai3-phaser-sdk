@@ -14,7 +14,7 @@ import { parseUnits } from "viem";
 
 export class EVMConnector {
   private static config: ConnectEVMWalletButtonConfig;
-  private static wagmiAdapter: WagmiAdapter;
+  public static wagmiAdapter: WagmiAdapter;
   public static connector: AppKit;
   private static walletChanged?: (wallet: unknown, address?: string) => void;
   private static onSigned?: (
@@ -35,7 +35,7 @@ export class EVMConnector {
     this.config = config;
     this.walletChanged = walletChanged;
     this.onSigned = onSigned;
-    return this.getInstance();
+    return await this.getInstance();
   }
 
   public static async getInstance(): Promise<EVMConnector> {
@@ -186,7 +186,8 @@ export class EVMConnector {
   public static async withdraw(
     contractAddress: string,
     withdrawNo: string,
-    amount: bigint
+    amount: bigint,
+    signature: string,
   ) {
     if (!this.connector) {
       throw new Error("Provider not initialized");
@@ -197,7 +198,7 @@ export class EVMConnector {
         address: contractAddress as `0x${string}`,
         abi: VaultABI,
         functionName: "withdraw",
-        args: [withdrawNo, amount],
+        args: [withdrawNo, amount, signature],
       });
 
       return result;

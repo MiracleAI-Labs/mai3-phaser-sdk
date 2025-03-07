@@ -20,6 +20,12 @@
   },
   {
     "anonymous": false,
+    "inputs": [],
+    "name": "EIP712DomainChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
     "inputs": [
       {
         "indexed": false,
@@ -117,9 +123,9 @@
       },
       {
         "indexed": true,
-        "internalType": "string",
+        "internalType": "uint256",
         "name": "withdrawNo",
-        "type": "string"
+        "type": "uint256"
       },
       {
         "indexed": false,
@@ -160,6 +166,24 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "deployerWithdraw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
@@ -168,6 +192,62 @@
     "name": "deposit",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "eip712Domain",
+    "outputs": [
+      {
+        "internalType": "bytes1",
+        "name": "fields",
+        "type": "bytes1"
+      },
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "version",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "chainId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "verifyingContract",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "salt",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "extensions",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getCurrentWithdrawNo",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -191,6 +271,19 @@
   },
   {
     "inputs": [],
+    "name": "getSigner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "getToken",
     "outputs": [
       {
@@ -205,9 +298,9 @@
   {
     "inputs": [
       {
-        "internalType": "string",
+        "internalType": "uint256",
         "name": "withdrawNo",
-        "type": "string"
+        "type": "uint256"
       }
     ],
     "name": "getWithdrawNo",
@@ -269,6 +362,11 @@
         "internalType": "contract IERC20",
         "name": "token",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "signer",
+        "type": "address"
       }
     ],
     "name": "initialize",
@@ -315,12 +413,12 @@
   {
     "inputs": [
       {
-        "internalType": "contract IERC20",
-        "name": "token",
+        "internalType": "address",
+        "name": "signer",
         "type": "address"
       }
     ],
-    "name": "setToken",
+    "name": "setSigner",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -328,17 +426,12 @@
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "withdrawNo",
-        "type": "string"
-      },
-      {
-        "internalType": "bool",
-        "name": "value",
-        "type": "bool"
+        "internalType": "contract IERC20",
+        "name": "token",
+        "type": "address"
       }
     ],
-    "name": "setWithdrawNo",
+    "name": "setToken",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -365,19 +458,53 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "withdrawNo",
+        "type": "uint256"
       },
       {
-        "internalType": "string",
-        "name": "withdrawNo",
-        "type": "string"
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
       },
       {
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signature",
+        "type": "bytes"
+      }
+    ],
+    "name": "verifyWithdraws",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "withdrawNo",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signature",
+        "type": "bytes"
       }
     ],
     "name": "withdraw",
