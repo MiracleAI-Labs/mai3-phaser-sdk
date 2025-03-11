@@ -154,7 +154,7 @@ export class EVMConnector {
     }
   }
 
-  public static async deposit(contractAddress: string, amount: bigint) {
+  public static async deposit(contractAddress: string, amount: number) {
     if (!this.connector) {
       throw new Error("Provider not initialized");
     }
@@ -186,7 +186,7 @@ export class EVMConnector {
   public static async withdraw(
     contractAddress: string,
     withdrawNo: string,
-    amount: bigint,
+    amount: number,
     signature: string,
   ) {
     if (!this.connector) {
@@ -248,7 +248,7 @@ export class EVMConnector {
   public static async approveToken(
     tokenAddress: string,
     contractAddress: string,
-    amount: bigint
+    amount: number
   ) {
     const config = this.wagmiAdapter.wagmiConfig;
     const decimals = await this.getTokenDecimals(tokenAddress as `0x${string}`);
